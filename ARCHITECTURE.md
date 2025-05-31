@@ -37,7 +37,7 @@ The "Friendly Portfolio Optimizer" is a web application that allows users to upl
 
 ### System Component Diagram
 ```mermaid
-graph TD
+flowchart TD
     A[User] -->|Uploads CSV, sets target| B[InputPanel]
     B --> C[parseCSV Utility]
     B --> D[AdvancedOptions]

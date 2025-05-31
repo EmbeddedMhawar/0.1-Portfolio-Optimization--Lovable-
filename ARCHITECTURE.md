@@ -35,35 +35,37 @@ The "Friendly Portfolio Optimizer" is a web application that allows users to upl
 
 ## Technical Diagrams
 
+> **Note:** GitHub's Mermaid rendering has limitations. Avoid using labels with parentheses, pipes, or special characters in arrows or node names. See: https://docs.github.com/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams#creating-mermaid-diagrams
+
 ### System Component Diagram
 ```mermaid
 flowchart TD
-    A[User] -->|Uploads CSV, sets target| B[InputPanel]
-    B --> C[parseCSV Utility]
-    B --> D[AdvancedOptions]
-    B --> E[optimizePortfolio Utility]
-    E --> F[Matrix Math & KKT Solver]
-    E --> G[Portfolio Metrics]
-    F --> E
-    G --> H[ResultsDashboard]
-    H --> I[Recharts Visualization]
-    H --> J[UI Feedback (Toasts, Status)]
+    User --> InputPanel
+    InputPanel --> parseCSV
+    InputPanel --> AdvancedOptions
+    InputPanel --> optimizePortfolio
+    optimizePortfolio --> MatrixMath
+    optimizePortfolio --> PortfolioMetrics
+    MatrixMath --> optimizePortfolio
+    PortfolioMetrics --> ResultsDashboard
+    ResultsDashboard --> Recharts
+    ResultsDashboard --> UIToasts
 ```
 
 ### Data Flow: Portfolio Optimization
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant UI as InputPanel
-    participant P as parseCSV
-    participant O as optimizePortfolio
-    participant R as ResultsDashboard
-    U->>UI: Upload CSV, set target return
-    UI->>P: parseCSV(csvContent)
-    P-->>UI: Parsed data
-    UI->>O: optimizePortfolio(prices, target, options)
-    O-->>UI: {weights, metrics}
-    UI->>R: Show results
+    participant User
+    participant InputPanel
+    participant parseCSV
+    participant optimizePortfolio
+    participant ResultsDashboard
+    User->>InputPanel: Upload CSV, set target return
+    InputPanel->>parseCSV: parseCSV
+    parseCSV-->>InputPanel: Parsed data
+    InputPanel->>optimizePortfolio: optimizePortfolio
+    optimizePortfolio-->>InputPanel: {weights, metrics}
+    InputPanel->>ResultsDashboard: Show results
 ```
 
 ### (Optional) Authentication Flow

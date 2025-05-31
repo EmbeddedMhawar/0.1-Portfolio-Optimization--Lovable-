@@ -60,7 +60,11 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
   }));
 
   const lineChartData = priceData?.dates.map((date, i) => ({
-    date,
+    date: new Date(date).toLocaleDateString('fr-FR', { 
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    }),
     ...priceData.assetNames.reduce((acc, name, j) => ({
       ...acc,
       [name]: priceData.prices[i][j]
@@ -144,8 +148,14 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
                     dataKey="date" 
                     tick={{ fill: '#64748b' }}
                     interval={Math.floor(lineChartData?.length / 5)}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
                   />
-                  <YAxis tick={{ fill: '#64748b' }} />
+                  <YAxis 
+                    tick={{ fill: '#64748b' }}
+                    tickFormatter={(value) => `${value.toLocaleString('fr-FR')}`}
+                  />
                   <Tooltip 
                     contentStyle={{ 
                       backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -153,6 +163,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
                       border: '1px solid rgba(255, 255, 255, 0.2)',
                       borderRadius: '8px'
                     }}
+                    formatter={(value: any) => [value.toLocaleString('fr-FR'), '']}
                   />
                   {priceData.assetNames.map((name, index) => (
                     <Line
@@ -162,7 +173,8 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
                       stroke={colors[index]}
                       strokeWidth={2}
                       dot={false}
-                      filter={`drop-shadow(0 0 6px ${colors[index]})`}
+                      name={name}
+                      filter={`drop-shadow(0 0 2px ${colors[index]}40)`}
                     />
                   ))}
                 </LineChart>
@@ -179,8 +191,18 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} layout="vertical">
-                <XAxis type="number" domain={[0, 100]} unit="%" />
-                <YAxis type="category" dataKey="name" width={100} />
+                <XAxis 
+                  type="number" 
+                  domain={[0, 100]} 
+                  unit="%" 
+                  tick={{ fill: '#64748b' }}
+                />
+                <YAxis 
+                  type="category" 
+                  dataKey="name" 
+                  width={100}
+                  tick={{ fill: '#64748b' }}
+                />
                 <Tooltip
                   contentStyle={{ 
                     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -188,14 +210,14 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                     borderRadius: '8px'
                   }}
-                  formatter={(value: number) => [`${value.toFixed(2)}%`]}
+                  formatter={(value: number) => [`${value.toFixed(2)}%`, 'Allocation']}
                 />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                   {barData.map((entry: any, index: number) => (
                     <Cell 
                       key={`cell-${index}`} 
                       fill={entry.color}
-                      filter={`drop-shadow(0 0 6px ${entry.color})`}
+                      filter={`drop-shadow(0 0 2px ${entry.color}40)`}
                     />
                   ))}
                 </Bar>

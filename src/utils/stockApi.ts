@@ -1,5 +1,3 @@
-import yahooFinance from 'yahoo-finance2';
-
 export interface StockData {
   symbol: string;
   prices: number[];
@@ -12,26 +10,24 @@ export async function fetchStockData(
   interval: string
 ): Promise<StockData[]> {
   try {
-    const stocksData: StockData[] = await Promise.all(
-      symbols.map(async (symbol) => {
-        const queryOptions = {
-          period: period,
-          interval: interval,
-        };
-        
-        const result = await yahooFinance.historical(symbol, queryOptions);
-        
-        const prices = result.map(quote => quote.close);
-        const dates = result.map(quote => quote.date.toISOString().split('T')[0]);
-        
-        return {
-          symbol,
-          prices,
-          dates
-        };
+    const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-stocks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+      },
+      body: JSON.stringify({
+        symbols,
+        period,
+        interval
       })
-    );
+    });
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const stocksData: StockData[] = await response.json();
     return stocksData;
   } catch (error) {
     console.error('Error fetching stock data:', error);

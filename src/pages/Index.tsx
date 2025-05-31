@@ -8,6 +8,7 @@ import { optimizePortfolio } from '../utils/portfolioOptimizer';
 import { parseCSV } from '../utils/csvParser';
 import { useToast } from '@/hooks/use-toast';
 import { ThemeProvider } from '../contexts/ThemeContext';
+import { fetchStockData } from '../utils/stockApi';
 
 const IndexContent = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -17,6 +18,8 @@ const IndexContent = () => {
   const [results, setResults] = useState<any>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [advancedOptions, setAdvancedOptions] = useState<any>({});
+  const [selectedStocks, setSelectedStocks] = useState<string[]>([]);
+  const [selectedPeriod, setSelectedPeriod] = useState('1y');
   const { toast } = useToast();
 
   const handleCsvUpload = (file: File) => {
@@ -25,8 +28,6 @@ const IndexContent = () => {
       try {
         const csvContent = e.target?.result as string;
         const parsed = parseCSV(csvContent);
-        
-        console.log('Parsed CSV data:', parsed);
         
         setParsedData(parsed);
         setCsvData({
@@ -51,27 +52,41 @@ const IndexContent = () => {
     reader.readAsText(file);
   };
 
-  const handleOptimize = () => {
-    if (!parsedData) {
-      toast({
-        title: "Aucune donnée disponible",
-        description: "Veuillez d'abord télécharger un fichier CSV",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleOptimize = async () => {
     setCurrentStep(2);
     
     try {
-      console.log('Using advanced options:', advancedOptions);
+      let optimizationData;
       
-      const result = optimizePortfolio(parsedData.prices, targetReturn, advancedOptions);
-      
-      console.log('Optimization result:', result);
+      if (csvData) {
+        optimizationData = parsedData;
+      } else if (selectedStocks.length > 0) {
+        const stocksData = await fetchStockData(selectedStocks, selectedPeriod, '1d');
+        
+        // Transform API data to match CSV format
+        optimizationData = {
+          assetNames: selectedStocks,
+          prices: stocksData[0].dates.map((_, i) => 
+            stocksData.map(stock => stock.prices[i])
+          ),
+          dates: stocksData[0].dates
+        };
+        
+        setParsedData(optimizationData);
+      } else {
+        toast({
+          title: "Aucune donnée disponible",
+          description: "Veuillez sélectionner des actions ou télécharger un fichier CSV",
+          variant: "destructive",
+        });
+        setCurrentStep(1);
+        return;
+      }
+
+      const result = optimizePortfolio(optimizationData.prices, targetReturn, advancedOptions);
       
       const weights = result.weights.map((weight, index) => ({
-        asset: parsedData.assetNames[index] || `Asset ${index + 1}`,
+        asset: optimizationData.assetNames[index],
         weight: weight,
         color: `hsl(${(index * 360) / result.weights.length}, 70%, 60%)`
       }));
@@ -122,6 +137,10 @@ const IndexContent = () => {
               setCsvData={handleCsvUpload}
               onOptimize={handleOptimize}
               isOptimizing={currentStep === 2}
+              selectedStocks={selectedStocks}
+              selectedPeriod={selectedPeriod}
+              onStocksChange={setSelectedStocks}
+              onPeriodChange={setSelectedPeriod}
             />
             
             <div className="mt-6">

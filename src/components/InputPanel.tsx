@@ -1,6 +1,6 @@
-
 import React, { useRef } from 'react';
 import { Upload, Play, FileText, Sliders } from 'lucide-react';
+import { StockSelector } from './StockSelector';
 
 interface InputPanelProps {
   targetReturn: number;
@@ -9,6 +9,10 @@ interface InputPanelProps {
   setCsvData: (file: File) => void;
   onOptimize: () => void;
   isOptimizing: boolean;
+  selectedStocks: string[];
+  selectedPeriod: string;
+  onStocksChange: (stocks: string[]) => void;
+  onPeriodChange: (period: string) => void;
 }
 
 export const InputPanel: React.FC<InputPanelProps> = ({
@@ -17,7 +21,11 @@ export const InputPanel: React.FC<InputPanelProps> = ({
   csvData,
   setCsvData,
   onOptimize,
-  isOptimizing
+  isOptimizing,
+  selectedStocks,
+  selectedPeriod,
+  onStocksChange,
+  onPeriodChange
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,7 +46,7 @@ export const InputPanel: React.FC<InputPanelProps> = ({
       {/* CSV Upload */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
-          Données des Actifs (CSV)
+          Données des Actifs
         </label>
         <div
           onClick={() => fileInputRef.current?.click()}
@@ -61,15 +69,24 @@ export const InputPanel: React.FC<InputPanelProps> = ({
             <div>
               <Upload className="w-8 h-8 text-indigo-400 dark:text-indigo-300 mx-auto mb-2" />
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Cliquez pour télécharger votre fichier CSV
-              </p>
-              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                Format: Date, Asset1, Asset2, ...
+                Téléchargez un fichier CSV ou utilisez la sélection d'actions ci-dessous
               </p>
             </div>
           )}
         </div>
       </div>
+
+      {/* Stock Selector */}
+      {!csvData && (
+        <div className="mb-6">
+          <StockSelector
+            selectedStocks={selectedStocks}
+            selectedPeriod={selectedPeriod}
+            onStocksChange={onStocksChange}
+            onPeriodChange={onPeriodChange}
+          />
+        </div>
+      )}
 
       {/* Target Return Slider */}
       <div className="mb-6">
@@ -98,9 +115,9 @@ export const InputPanel: React.FC<InputPanelProps> = ({
       {/* Optimize Button */}
       <button
         onClick={onOptimize}
-        disabled={!csvData || isOptimizing}
+        disabled={(!csvData && selectedStocks.length === 0) || isOptimizing}
         className={`w-full py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center space-x-2 ${
-          !csvData || isOptimizing
+          (!csvData && selectedStocks.length === 0) || isOptimizing
             ? 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed'
             : 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
         }`}

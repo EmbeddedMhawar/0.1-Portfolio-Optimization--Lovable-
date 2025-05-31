@@ -66,12 +66,10 @@ const IndexContent = () => {
     try {
       console.log('Using advanced options:', advancedOptions);
       
-      // Pass advanced options to the optimizer
       const result = optimizePortfolio(parsedData.prices, targetReturn, advancedOptions);
       
       console.log('Optimization result:', result);
       
-      // Transform weights into the format expected by the UI
       const weights = result.weights.map((weight, index) => ({
         asset: parsedData.assetNames[index] || `Asset ${index + 1}`,
         weight: weight,
@@ -80,9 +78,11 @@ const IndexContent = () => {
 
       const optimizationResults = {
         weights,
-        expectedReturn: result.metrics.expectedReturn,
-        volatility: result.metrics.volatility,
-        sharpeRatio: result.metrics.expectedReturn / result.metrics.volatility,
+        metrics: {
+          expectedReturn: result.metrics.expectedReturn,
+          volatility: result.metrics.volatility,
+          sharpeRatio: result.metrics.expectedReturn / result.metrics.volatility
+        },
         constraintsMet: true,
         advancedOptions: advancedOptions
       };
@@ -147,7 +147,11 @@ const IndexContent = () => {
 
           {/* Results Panel */}
           <div className="lg:col-span-2">
-            <ResultsDashboard results={results} isLoading={currentStep === 2} />
+            <ResultsDashboard 
+              results={results} 
+              isLoading={currentStep === 2} 
+              priceData={parsedData}
+            />
           </div>
         </div>
       </div>

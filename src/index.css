@@ -6,33 +6,6 @@
   :root {
     --background: 102 26% 7%;
     --foreground: 210 40% 98%;
-
-    --card: 102 26% 7%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 102 26% 7%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 102 26% 21%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 102 26% 16%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 102 26% 16%;
-    --muted-foreground: 96 24% 68%;
-
-    --accent: 102 26% 16%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 102 26% 21%;
-    --input: 102 26% 21%;
-    --ring: 102 26% 21%;
-
-    --radius: 0.5rem;
   }
 }
 
@@ -43,6 +16,11 @@
   
   body {
     @apply bg-[#162013] text-foreground font-['Inter'];
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
   }
 }
 

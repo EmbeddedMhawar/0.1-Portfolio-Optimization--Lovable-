@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, Sun } from 'lucide-react';
 
 export const Header = () => {
   return (
@@ -24,6 +24,10 @@ export const Header = () => {
         
         <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#2e4328] text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
           <Bell className="text-white" size={20} />
+        </button>
+
+        <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#2e4328] text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
+          <Sun className="text-white" size={20} />
         </button>
         
         <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" 

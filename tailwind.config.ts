@@ -1,22 +1,13 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
-  prefix: "",
   theme: {
-    container: {
-      center: true,
-      padding: '2rem',
-      screens: {
-        '2xl': '1400px'
-      }
-    },
     extend: {
       colors: {
         border: '#2e4328',
@@ -39,27 +30,10 @@ export default {
         accent: {
           DEFAULT: '#21301c',
           foreground: '#ffffff'
-        },
-        destructive: {
-          DEFAULT: '#991b1b',
-          foreground: '#ffffff'
-        },
-        popover: {
-          DEFAULT: '#162013',
-          foreground: '#ffffff'
-        },
-        card: {
-          DEFAULT: '#162013',
-          foreground: '#ffffff'
         }
       },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)'
-      },
       fontFamily: {
-        sans: ['Inter', 'Noto Sans', 'sans-serif']
+        sans: ['Inter', 'sans-serif']
       }
     }
   },

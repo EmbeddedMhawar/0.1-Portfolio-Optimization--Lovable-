@@ -20,6 +20,7 @@ interface OptimizationResults {
     sharpeRatio: number;
   };
   constraintsMet: boolean;
+  isCrypto?: boolean;
 }
 
 interface ResultsDashboardProps {
@@ -61,17 +62,49 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
     );
   }
 
-  const getMetricColor = (value: number, isReturn = false) => {
+  const getMetricColor = (value: number, isReturn = false, isVolatility = false) => {
     if (isReturn) {
       return value >= 0 
         ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]' 
         : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
     }
+
+    if (isVolatility) {
+      if (results.isCrypto) {
+        return value <= 3 
+          ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]'
+          : value <= 6
+            ? 'text-amber-500 dark:text-amber-400 [text-shadow:0_0_10px_rgba(245,158,11,0.3)]'
+            : value <= 10
+              ? 'text-orange-500 dark:text-orange-400 [text-shadow:0_0_10px_rgba(249,115,22,0.3)]'
+              : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
+      } else {
+        return value <= 2.5
+          ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]'
+          : value <= 4
+            ? 'text-amber-500 dark:text-amber-400 [text-shadow:0_0_10px_rgba(245,158,11,0.3)]'
+            : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
+      }
+    }
+
     return value >= 2 
       ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]'
       : value >= 1
         ? 'text-amber-500 dark:text-amber-400 [text-shadow:0_0_10px_rgba(245,158,11,0.3)]'
         : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
+  };
+
+  const getVolatilityTooltip = (volatility: number) => {
+    if (results.isCrypto) {
+      if (volatility <= 3) return "Low volatility for crypto assets. Very stable performance.";
+      if (volatility <= 6) return "Moderate volatility for crypto assets. Good tradability.";
+      if (volatility <= 10) return "High but tradable volatility for crypto assets.";
+      return "Very high volatility. Increased risk of significant losses.";
+    } else {
+      if (volatility <= 2.5) return "Low volatility. Very stable performance.";
+      if (volatility <= 4) return "Moderate volatility. Still tradable but requires attention.";
+      return "High volatility. Increased risk of significant losses.";
+    }
   };
 
   const MetricCard = ({ 
@@ -80,7 +113,8 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
     tooltip, 
     icon: Icon, 
     format = (v: number) => v.toFixed(2), 
-    isReturn = false 
+    isReturn = false,
+    isVolatility = false
   }) => (
     <div className="relative bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
       <div className="flex items-center gap-2 mb-2">
@@ -96,15 +130,17 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
             align="center" 
             className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[60]"
           >
-            <p className="text-[#2e4328] dark:text-white text-sm">{tooltip}</p>
+            <p className="text-[#2e4328] dark:text-white text-sm">
+              {isVolatility ? getVolatilityTooltip(value) : tooltip}
+            </p>
           </TooltipContent>
         </Tooltip>
       </div>
       <div className="flex items-center gap-2">
-        <p className={`text-2xl font-bold ${getMetricColor(value, isReturn)}`}>
+        <p className={`text-2xl font-bold ${getMetricColor(value, isReturn, isVolatility)}`}>
           {format(value)}
         </p>
-        <Icon className={`w-6 h-6 ${getMetricColor(value, isReturn)}`} />
+        <Icon className={`w-6 h-6 ${getMetricColor(value, isReturn, isVolatility)}`} />
       </div>
     </div>
   );
@@ -138,7 +174,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <TooltipProvider>
           <MetricCard
-            label="Return"
+            label="Expected Return"
             value={results.metrics.expectedReturn * 100}
             tooltip="The anticipated annual return of the portfolio based on historical data. A positive value (green) indicates expected profits, while negative (red) suggests potential losses."
             icon={results.metrics.expectedReturn >= 0 ? TrendingUp : TrendingDown}
@@ -149,15 +185,16 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
           <MetricCard
             label="Volatility"
             value={results.metrics.volatility * 100}
-            tooltip="Measures the portfolio's risk level through price fluctuations. Lower volatility (green) indicates stability, while higher values (red) suggest more risk. Calculated as the standard deviation of returns."
+            tooltip="Measures the portfolio's risk level through price fluctuations."
             icon={TrendingDown}
             format={(v) => `${v.toFixed(2)}%`}
+            isVolatility={true}
           />
           
           <MetricCard
-            label="Sharpe"
+            label="Sharpe Ratio"
             value={results.metrics.sharpeRatio}
-            tooltip="A measure of risk-adjusted returns. Higher values (green) indicate better returns per unit of risk. Values above 1 are considered good, above 2 excellent. Calculated as (portfolio return - risk-free rate) / portfolio volatility."
+            tooltip="A measure of risk-adjusted returns. Higher values (green) indicate better returns per unit of risk. Values above 1 are considered good, above 2 excellent."
             icon={Shield}
           />
         </TooltipProvider>

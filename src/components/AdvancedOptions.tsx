@@ -2,32 +2,35 @@
 import React, { useState } from 'react';
 import { Settings, Zap, Brain, Calculator } from 'lucide-react';
 
+import { AdvancedOptions as AdvancedOptionsType } from '../types/optimization';
+
 interface AdvancedOptionsProps {
-  onOptionsChange: (options: any) => void;
+  onOptionsChange: (options: AdvancedOptionsType) => void;
 }
 
 export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({ onOptionsChange }) => {
-  const [optimizationType, setOptimizationType] = useState('portfolio');
-  const [solverMethod, setSolverMethod] = useState('lu');
-  const [constraints, setConstraints] = useState({
+  const [optimizationType, setOptimizationType] = useState<AdvancedOptionsType['optimizationType']>('portfolio');
+  const [solverMethod, setSolverMethod] = useState<AdvancedOptionsType['solverMethod']>('lu');
+  const [constraints, setConstraints] = useState<AdvancedOptionsType['constraints']>({
     nonNegativity: true,
     sumToOne: true,
     customConstraints: false
   });
-  const [kktParams, setKktParams] = useState({
+  const [kktParams, setKktParams] = useState<AdvancedOptionsType['kktParams']>({
     tolerance: 1e-8,
     maxIterations: 1000
   });
 
   // Notify parent component when options change
   React.useEffect(() => {
-    onOptionsChange({
+    const options: AdvancedOptionsType = {
       optimizationType,
       solverMethod,
       constraints,
       kktParams
-    });
-  }, [optimizationType, solverMethod, constraints, kktParams, onOptionsChange]);
+    };
+    onOptionsChange(options);
+  }, [optimizationType, solverMethod, constraints, kktParams]); // Removed onOptionsChange from deps
 
   const handleConstraintChange = (key: keyof typeof constraints) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setConstraints(prev => ({
@@ -57,10 +60,10 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({ onOptionsChang
         </label>
         <div className="grid grid-cols-1 gap-2">
           {[
-            { value: 'portfolio', label: 'Optimisation de Portefeuille', icon: Calculator },
-            { value: 'svm', label: 'Support Vector Machine', icon: Brain },
-            { value: 'lqr', label: 'Régulateur Linéaire Quadratique', icon: Zap },
-            { value: 'resource', label: 'Allocation de Ressources', icon: Settings }
+            { value: 'portfolio' as const, label: 'Optimisation de Portefeuille', icon: Calculator },
+            { value: 'svm' as const, label: 'Support Vector Machine', icon: Brain },
+            { value: 'lqr' as const, label: 'Régulateur Linéaire Quadratique', icon: Zap },
+            { value: 'resource' as const, label: 'Allocation de Ressources', icon: Settings }
           ].map((option) => (
             <button
               key={option.value}
@@ -85,7 +88,12 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({ onOptionsChang
         </label>
         <select
           value={solverMethod}
-          onChange={(e) => setSolverMethod(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value === 'lu' || value === 'cholesky' || value === 'qr' || value === 'svd') {
+              setSolverMethod(value);
+            }
+          }}
           className="w-full p-3 border border-gray-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
         >
           <option value="lu">Décomposition LU</option>

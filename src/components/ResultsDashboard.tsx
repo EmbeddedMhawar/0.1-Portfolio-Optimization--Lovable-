@@ -2,8 +2,10 @@ import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line } from 'recharts';
 import { TrendingUp, TrendingDown, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
 
+import { OptimizationResults } from '../types/optimization';
+
 interface ResultsDashboardProps {
-  results: any;
+  results: OptimizationResults | null;
   isLoading: boolean;
   priceData?: {
     dates: string[];

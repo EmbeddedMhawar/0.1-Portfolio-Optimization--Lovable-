@@ -141,7 +141,10 @@ function constructKKTMatrix(covariance: number[][], meanReturns: number[]): numb
   return kkt;
 }
 
-export interface OptimizationResult {
+//import { OptimizationResult as ExtendedOptimizationResult } from '../types/optimization';
+
+// Internal optimization result before color assignment
+interface OptimizationResult {
   weights: number[];
   metrics: {
     expectedReturn: number;

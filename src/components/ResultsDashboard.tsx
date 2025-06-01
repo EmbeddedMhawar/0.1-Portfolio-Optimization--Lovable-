@@ -74,6 +74,41 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
         : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
   };
 
+  const MetricCard = ({ 
+    label, 
+    value, 
+    tooltip, 
+    icon: Icon, 
+    format = (v: number) => v.toFixed(2), 
+    isReturn = false 
+  }) => (
+    <div className="relative bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
+      <div className="flex items-center gap-2 mb-2">
+        <p className="text-sm text-[#426039] dark:text-[#a2c398]">{label}</p>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
+              <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent 
+            side="top" 
+            align="center" 
+            className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[60]"
+          >
+            <p className="text-[#2e4328] dark:text-white text-sm">{tooltip}</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+      <div className="flex items-center gap-2">
+        <p className={`text-2xl font-bold ${getMetricColor(value, isReturn)}`}>
+          {format(value)}
+        </p>
+        <Icon className={`w-6 h-6 ${getMetricColor(value, isReturn)}`} />
+      </div>
+    </div>
+  );
+
   return (
     <div className="space-y-6">
       {/* Status Banner */}
@@ -102,95 +137,29 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <TooltipProvider>
-          {/* Expected Return Card */}
-          <div className="relative bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-[#426039] dark:text-[#a2c398]">Return</p>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
-                      <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" align="center" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[9999]">
-                    <p className="text-[#2e4328] dark:text-white text-sm">
-                      The anticipated annual return of the portfolio based on historical data. 
-                      A positive value (green) indicates expected profits, while negative (red) suggests potential losses.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className={`text-2xl font-bold ${getMetricColor(results.metrics.expectedReturn, true)}`}>
-                {(results.metrics.expectedReturn * 100).toFixed(2)}%
-              </p>
-              {results.metrics.expectedReturn >= 0 ? (
-                <TrendingUp className={`w-6 h-6 ${getMetricColor(results.metrics.expectedReturn, true)}`} />
-              ) : (
-                <TrendingDown className={`w-6 h-6 ${getMetricColor(results.metrics.expectedReturn, true)}`} />
-              )}
-            </div>
-          </div>
-
-          {/* Volatility Card */}
-          <div className="relative bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-[#426039] dark:text-[#a2c398]">Volatility</p>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
-                      <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" align="center" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[9999]">
-                    <p className="text-[#2e4328] dark:text-white text-sm">
-                      Measures the portfolio's risk level through price fluctuations. 
-                      Lower volatility (green) indicates stability, while higher values (red) suggest more risk.
-                      Calculated as the standard deviation of returns.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className={`text-2xl font-bold ${getMetricColor(results.metrics.volatility)}`}>
-                {(results.metrics.volatility * 100).toFixed(2)}%
-              </p>
-              <TrendingDown className={`w-6 h-6 ${getMetricColor(results.metrics.volatility)}`} />
-            </div>
-          </div>
-
-          {/* Sharpe Ratio Card */}
-          <div className="relative bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-[#426039] dark:text-[#a2c398]">Sharpe</p>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
-                      <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" align="center" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[9999]">
-                    <p className="text-[#2e4328] dark:text-white text-sm">
-                      A measure of risk-adjusted returns. Higher values (green) indicate better returns per unit of risk.
-                      Values above 1 are considered good, above 2 excellent.
-                      Calculated as (portfolio return - risk-free rate) / portfolio volatility.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className={`text-2xl font-bold ${getMetricColor(results.metrics.sharpeRatio)}`}>
-                {results.metrics.sharpeRatio.toFixed(2)}
-              </p>
-              <Shield className={`w-6 h-6 ${getMetricColor(results.metrics.sharpeRatio)}`} />
-            </div>
-          </div>
+          <MetricCard
+            label="Return"
+            value={results.metrics.expectedReturn * 100}
+            tooltip="The anticipated annual return of the portfolio based on historical data. A positive value (green) indicates expected profits, while negative (red) suggests potential losses."
+            icon={results.metrics.expectedReturn >= 0 ? TrendingUp : TrendingDown}
+            format={(v) => `${v.toFixed(2)}%`}
+            isReturn={true}
+          />
+          
+          <MetricCard
+            label="Volatility"
+            value={results.metrics.volatility * 100}
+            tooltip="Measures the portfolio's risk level through price fluctuations. Lower volatility (green) indicates stability, while higher values (red) suggest more risk. Calculated as the standard deviation of returns."
+            icon={TrendingDown}
+            format={(v) => `${v.toFixed(2)}%`}
+          />
+          
+          <MetricCard
+            label="Sharpe"
+            value={results.metrics.sharpeRatio}
+            tooltip="A measure of risk-adjusted returns. Higher values (green) indicate better returns per unit of risk. Values above 1 are considered good, above 2 excellent. Calculated as (portfolio return - risk-free rate) / portfolio volatility."
+            icon={Shield}
+          />
         </TooltipProvider>
       </div>
 

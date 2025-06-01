@@ -1,7 +1,10 @@
 import React from 'react';
-import { Bell, Sun } from 'lucide-react';
+import { Bell, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 export const Header = () => {
+  const { isDarkMode, toggleDarkMode } = useTheme();
+
   return (
     <header className="flex items-center justify-between px-10 py-3 border-b border-[#2e4328]">
       <div className="flex items-center gap-4">
@@ -26,8 +29,8 @@ export const Header = () => {
           <button className="header-button">
             <Bell className="h-5 w-5" />
           </button>
-          <button className="header-button">
-            <Sun className="h-5 w-5" />
+          <button className="header-button" onClick={toggleDarkMode}>
+            {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
           <div 
             className="w-10 h-10 rounded-full bg-cover bg-center"

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { TrendingUp, TrendingDown, Shield, AlertTriangle, CheckCircle, ChevronDown, Info } from 'lucide-react';
 import { availableStocks } from '../utils/stockApi';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface OptimizationResults {
   weights: {
@@ -98,7 +104,22 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
         <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#426039] dark:text-[#a2c398]">Expected Return</p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-[#426039] dark:text-[#a2c398]">Expected Return</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs">
+                      <p className="text-[#2e4328] dark:text-white text-sm">
+                        The anticipated annual return of the portfolio based on historical data. 
+                        A positive value (green) indicates expected profits, while negative (red) suggests potential losses.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <p className={`text-2xl font-bold ${getMetricColor(results.metrics.expectedReturn, true)}`}>
                 {(results.metrics.expectedReturn * 100).toFixed(2)}%
               </p>
@@ -114,7 +135,23 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
         <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#426039] dark:text-[#a2c398]">Volatility</p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-[#426039] dark:text-[#a2c398]">Volatility</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs">
+                      <p className="text-[#2e4328] dark:text-white text-sm">
+                        Measures the portfolio's risk level through price fluctuations. 
+                        Lower volatility (green) indicates stability, while higher values (red) suggest more risk.
+                        Calculated as the standard deviation of returns.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <p className={`text-2xl font-bold ${getMetricColor(results.metrics.volatility)}`}>
                 {(results.metrics.volatility * 100).toFixed(2)}%
               </p>
@@ -126,7 +163,23 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
         <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#426039] dark:text-[#a2c398]">Sharpe Ratio</p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-[#426039] dark:text-[#a2c398]">Sharpe Ratio</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs">
+                      <p className="text-[#2e4328] dark:text-white text-sm">
+                        A measure of risk-adjusted returns. Higher values (green) indicate better returns per unit of risk.
+                        Values above 1 are considered good, above 2 excellent.
+                        Calculated as (portfolio return - risk-free rate) / portfolio volatility.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <p className={`text-2xl font-bold ${getMetricColor(results.metrics.sharpeRatio)}`}>
                 {results.metrics.sharpeRatio.toFixed(2)}
               </p>
@@ -140,12 +193,18 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
       <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-6 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328]">
         <h3 className="text-lg font-semibold text-[#2e4328] dark:text-white mb-6 flex items-center gap-2">
           Portfolio Allocation
-          <div className="relative group">
-            <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398] cursor-help" />
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 text-xs text-[#2e4328] dark:text-white bg-white dark:bg-[#2e4328] rounded-lg shadow-lg border border-[#d4e6d7] dark:border-[#426039] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-              Click on a stock to see detailed information
-            </div>
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
+              </TooltipTrigger>
+              <TooltipContent className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3">
+                <p className="text-[#2e4328] dark:text-white text-sm">
+                  Click on a stock to see detailed information
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </h3>
 
         {/* Weights List */}

@@ -15,44 +15,32 @@
   }
   
   body {
-    @apply bg-[#162013] text-foreground font-['Inter'];
-  }
-
-  @font-face {
-    font-family: 'Inter';
-    src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+    font-family: 'Inter', sans-serif;
+    @apply bg-[#162013] text-foreground;
   }
 }
 
-.recharts-cartesian-grid-horizontal line,
-.recharts-cartesian-grid-vertical line {
-  @apply stroke-[#2e4328];
+.search-input {
+  @apply bg-[#2e4328] text-white placeholder:text-[#a2c398] rounded-lg;
+  @apply focus:ring-0 focus:outline-none;
 }
 
-.recharts-text {
-  @apply fill-[#a2c398] text-sm;
+.stock-chip {
+  @apply bg-[#2e4328] text-white rounded-lg px-4 py-2 text-sm font-medium;
 }
 
-.recharts-tooltip-wrapper {
-  @apply !bg-[#2e4328] border border-[#426039] rounded-lg overflow-hidden;
+.time-period-button {
+  @apply bg-[#2e4328] text-[#a2c398] rounded-lg px-4 py-2;
+  @apply data-[active=true]:bg-[#162013] data-[active=true]:text-white;
 }
 
-.recharts-default-tooltip {
-  @apply !bg-transparent !border-none p-2;
+.date-input {
+  @apply bg-[#21301c] border border-[#426039] text-white;
+  @apply placeholder:text-[#a2c398] rounded-lg px-4 py-2;
+  @apply focus:ring-0 focus:outline-none focus:border-[#426039];
 }
 
-.recharts-tooltip-label {
-  @apply text-white text-sm;
-}
-
-.recharts-tooltip-item {
-  @apply text-[#a2c398] text-sm;
-}
-
-.recharts-line {
-  @apply !stroke-[#426039];
-}
-
-.recharts-bar path {
-  @apply !fill-[#2e4328];
+.header-button {
+  @apply bg-[#2e4328] text-white rounded-lg p-2;
+  @apply hover:bg-[#426039] transition-colors;
 }

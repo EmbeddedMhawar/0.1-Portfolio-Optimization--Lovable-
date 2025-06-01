@@ -1,70 +1,86 @@
+import yahooFinance from 'yahoo-finance2';
+
 export interface StockData {
   symbol: string;
   prices: number[];
   dates: string[];
 }
 
+export interface Stock {
+  symbol: string;
+  name: string;
+  exchange?: string;
+  type?: string;
+}
+
+export const availableStocks = [
+  { symbol: 'AAPL', name: 'Apple Inc.', exchange: 'NASDAQ' },
+  { symbol: 'MSFT', name: 'Microsoft Corporation', exchange: 'NASDAQ' },
+  { symbol: 'GOOGL', name: 'Alphabet Inc.', exchange: 'NASDAQ' },
+  { symbol: 'AMZN', name: 'Amazon.com Inc.', exchange: 'NASDAQ' },
+  { symbol: 'META', name: 'Meta Platforms Inc.', exchange: 'NASDAQ' },
+  { symbol: 'TSLA', name: 'Tesla Inc.', exchange: 'NASDAQ' },
+  { symbol: 'NVDA', name: 'NVIDIA Corporation', exchange: 'NASDAQ' },
+  { symbol: 'JPM', name: 'JPMorgan Chase & Co.', exchange: 'NYSE' },
+  { symbol: 'V', name: 'Visa Inc.', exchange: 'NYSE' },
+  { symbol: 'JNJ', name: 'Johnson & Johnson', exchange: 'NYSE' },
+  { symbol: 'WMT', name: 'Walmart Inc.', exchange: 'NYSE' },
+  { symbol: 'PG', name: 'Procter & Gamble Co.', exchange: 'NYSE' },
+  { symbol: 'MA', name: 'Mastercard Inc.', exchange: 'NYSE' },
+  { symbol: 'UNH', name: 'UnitedHealth Group Inc.', exchange: 'NYSE' },
+  { symbol: 'HD', name: 'Home Depot Inc.', exchange: 'NYSE' }
+];
+
+export const availablePeriods = [
+  { value: '1mo', label: '1 Month' },
+  { value: '3mo', label: '3 Months' },
+  { value: '6mo', label: '6 Months' },
+  { value: '1y', label: '1 Year' },
+  { value: '2y', label: '2 Years' },
+  { value: '5y', label: '5 Years' }
+];
+
+export async function searchStocks(query: string): Promise<Stock[]> {
+  if (!query) return [];
+  
+  const normalizedQuery = query.toLowerCase();
+  return availableStocks.filter(stock => 
+    stock.symbol.toLowerCase().includes(normalizedQuery) ||
+    stock.name.toLowerCase().includes(normalizedQuery)
+  );
+}
+
 export async function fetchStockData(
   symbols: string[],
   period: string,
-  interval: string
+  interval: string = '1d'
 ): Promise<StockData[]> {
-  // For MVP, use mock data
-  return generateMockPriceData(symbols, period);
-  
-  // TODO: Uncomment below for real API integration
-  /*
   try {
-    const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-stocks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-      },
-      body: JSON.stringify({
-        symbols,
-        period,
-        interval
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    const endDate = new Date();
+    const startDate = new Date();
+    
+    // Calculate start date based on period
+    switch(period) {
+      case '1mo': startDate.setMonth(endDate.getMonth() - 1); break;
+      case '3mo': startDate.setMonth(endDate.getMonth() - 3); break;
+      case '6mo': startDate.setMonth(endDate.getMonth() - 6); break;
+      case '1y': startDate.setFullYear(endDate.getFullYear() - 1); break;
+      case '2y': startDate.setFullYear(endDate.getFullYear() - 2); break;
+      case '5y': startDate.setFullYear(endDate.getFullYear() - 5); break;
+      default: startDate.setFullYear(endDate.getFullYear() - 1);
     }
 
-    const stocksData: StockData[] = await response.json();
-    return stocksData;
+    // For now, return mock data
+    // In production, this would use the Yahoo Finance API
+    return generateMockPriceData(symbols, period);
   } catch (error) {
     console.error('Error fetching stock data:', error);
     throw error;
   }
-  */
 }
 
-export const availableStocks = [
-  { symbol: 'AAPL', name: 'Apple Inc.' },
-  { symbol: 'MSFT', name: 'Microsoft Corporation' },
-  { symbol: 'GOOGL', name: 'Alphabet Inc.' },
-  { symbol: 'AMZN', name: 'Amazon.com Inc.' },
-  { symbol: 'META', name: 'Meta Platforms Inc.' },
-  { symbol: 'TSLA', name: 'Tesla Inc.' },
-  { symbol: 'NVDA', name: 'NVIDIA Corporation' },
-  { symbol: 'JPM', name: 'JPMorgan Chase & Co.' },
-  { symbol: 'V', name: 'Visa Inc.' },
-  { symbol: 'JNJ', name: 'Johnson & Johnson' }
-];
-
-export const availablePeriods = [
-  { value: '1mo', label: '1 Mois' },
-  { value: '3mo', label: '3 Mois' },
-  { value: '6mo', label: '6 Mois' },
-  { value: '1y', label: '1 An' },
-  { value: '2y', label: '2 Ans' },
-  { value: '5y', label: '5 Ans' }
-];
-
-// Mock data for static testing
-export function generateMockPriceData(symbols: string[], period: string): StockData[] {
+// Mock data generator for development
+function generateMockPriceData(symbols: string[], period: string): StockData[] {
   const numPoints = period === '1mo' ? 30 : 
                    period === '3mo' ? 90 :
                    period === '6mo' ? 180 :
@@ -72,9 +88,9 @@ export function generateMockPriceData(symbols: string[], period: string): StockD
                    period === '2y' ? 730 : 1825;
 
   return symbols.map(symbol => {
-    const basePrice = Math.random() * 100 + 50; // Random base price between 50 and 150
-    const trend = Math.random() * 0.001 - 0.0005; // Random trend between -0.05% and 0.05% per day
-    const volatility = Math.random() * 0.02; // Random volatility between 0% and 2%
+    const basePrice = Math.random() * 100 + 50;
+    const trend = Math.random() * 0.001 - 0.0005;
+    const volatility = Math.random() * 0.02;
 
     const prices: number[] = [];
     const dates: string[] = [];
@@ -85,10 +101,9 @@ export function generateMockPriceData(symbols: string[], period: string): StockD
       date.setDate(date.getDate() - (numPoints - i));
       dates.push(date.toISOString().split('T')[0]);
 
-      // Random walk with trend and volatility
       const randomChange = (Math.random() - 0.5) * volatility;
       currentPrice = currentPrice * (1 + trend + randomChange);
-      prices.push(Math.max(1, currentPrice)); // Ensure price stays positive
+      prices.push(Math.max(1, currentPrice));
     }
 
     return {

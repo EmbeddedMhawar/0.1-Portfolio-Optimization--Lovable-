@@ -11,26 +11,44 @@ export default {
   theme: {
     extend: {
       colors: {
-        border: '#2e4328',
-        input: '#2e4328',
-        ring: '#426039',
-        background: '#162013',
-        foreground: '#ffffff',
+        border: {
+          DEFAULT: '#d1ddd5',
+          dark: '#2e4328'
+        },
+        input: {
+          DEFAULT: '#e2e8e4',
+          dark: '#2e4328'
+        },
+        ring: {
+          DEFAULT: '#426039',
+          dark: '#426039'
+        },
+        background: {
+          DEFAULT: '#f8f9fa',
+          dark: '#162013'
+        },
+        foreground: {
+          DEFAULT: '#2e4328',
+          dark: '#ffffff'
+        },
         primary: {
           DEFAULT: '#2e4328',
           foreground: '#ffffff'
         },
         secondary: {
-          DEFAULT: '#21301c',
-          foreground: '#ffffff'
+          DEFAULT: '#e2e8e4',
+          dark: '#21301c',
+          foreground: '#2e4328'
         },
         muted: {
-          DEFAULT: '#21301c',
-          foreground: '#a2c398'
+          DEFAULT: '#e2e8e4',
+          dark: '#21301c',
+          foreground: '#426039'
         },
         accent: {
-          DEFAULT: '#21301c',
-          foreground: '#ffffff'
+          DEFAULT: '#e2e8e4',
+          dark: '#21301c',
+          foreground: '#2e4328'
         }
       },
       fontFamily: {

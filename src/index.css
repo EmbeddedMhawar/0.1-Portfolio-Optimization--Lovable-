@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    --background: 102 26% 7%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 98%;
+    --foreground: 102 26% 7%;
   }
 
   .dark {
@@ -21,35 +21,57 @@
   
   body {
     font-family: 'Inter', sans-serif;
-    @apply bg-[#162013] text-foreground transition-colors duration-300;
+    @apply bg-[#f8f9fa] dark:bg-[#162013] text-foreground transition-colors duration-700;
+  }
+
+  /* Theme toggle ripple effect */
+  .theme-toggle-ripple {
+    @apply relative overflow-hidden;
+  }
+
+  .theme-toggle-ripple::after {
+    @apply absolute inset-0 rounded-lg;
+    content: '';
+    background: radial-gradient(circle at center, 
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(255, 255, 255, 0) 70%
+    );
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 1s, opacity 1s;
+  }
+
+  .theme-toggle-ripple[data-theme-changing="true"]::after {
+    transform: scale(3);
+    opacity: 0.3;
   }
 }
 
 .search-input {
-  @apply bg-[#2e4328] text-white placeholder:text-[#a2c398] rounded-lg;
+  @apply bg-[#e9ecef] dark:bg-[#2e4328] text-[#343a40] dark:text-white placeholder:text-[#6c757d] dark:placeholder:text-[#a2c398] rounded-lg;
   @apply focus:ring-0 focus:outline-none;
   @apply transition-colors duration-300;
 }
 
 .stock-chip {
-  @apply bg-[#2e4328] text-white rounded-lg px-4 py-2 text-sm font-medium;
+  @apply bg-[#e9ecef] dark:bg-[#2e4328] text-[#343a40] dark:text-white rounded-lg px-4 py-2 text-sm font-medium;
   @apply transition-colors duration-300;
 }
 
 .time-period-button {
-  @apply bg-[#2e4328] text-[#a2c398] rounded-lg px-4 py-2;
-  @apply data-[active=true]:bg-[#162013] data-[active=true]:text-white;
+  @apply bg-[#e9ecef] dark:bg-[#2e4328] text-[#6c757d] dark:text-[#a2c398] rounded-lg px-4 py-2;
+  @apply data-[active=true]:bg-white dark:data-[active=true]:bg-[#162013] data-[active=true]:text-[#343a40] dark:data-[active=true]:text-white;
   @apply transition-colors duration-300;
 }
 
 .date-input {
-  @apply bg-[#21301c] border border-[#426039] text-white;
-  @apply placeholder:text-[#a2c398] rounded-lg px-4 py-2;
-  @apply focus:ring-0 focus:outline-none focus:border-[#426039];
+  @apply bg-white dark:bg-[#21301c] border border-[#dee2e6] dark:border-[#426039] text-[#343a40] dark:text-white;
+  @apply placeholder:text-[#6c757d] dark:placeholder:text-[#a2c398] rounded-lg px-4 py-2;
+  @apply focus:ring-0 focus:outline-none focus:border-[#adb5bd] dark:focus:border-[#426039];
   @apply transition-colors duration-300;
 }
 
 .header-button {
-  @apply bg-[#2e4328] text-white rounded-lg p-2;
-  @apply hover:bg-[#426039] transition-colors duration-300;
+  @apply bg-[#e9ecef] dark:bg-[#2e4328] text-[#343a40] dark:text-white rounded-lg p-2;
+  @apply hover:bg-[#dee2e6] dark:hover:bg-[#426039] transition-colors duration-300;
 }

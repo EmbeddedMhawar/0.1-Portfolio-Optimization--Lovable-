@@ -7,16 +7,16 @@ const Index = () => {
   const periods = ['1Y', '3Y', '5Y', '10Y', 'MAX'];
 
   return (
-    <div className="min-h-screen bg-[#162013]">
+    <div className="min-h-screen bg-[#f8f9fa] dark:bg-[#162013] transition-colors duration-700">
       <Header />
       
       <div className="px-40 flex flex-1 justify-center py-5">
         <div className="flex flex-col w-[512px] max-w-[512px] py-5">
-          <h1 className="text-white text-[32px] font-bold mb-6">Optimize Portfolio</h1>
+          <h1 className="text-[#343a40] dark:text-white text-[32px] font-bold mb-6">Optimize Portfolio</h1>
 
           <div className="relative mb-6">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-[#a2c398]" />
+              <Search className="h-5 w-5 text-[#6c757d] dark:text-[#a2c398]" />
             </div>
             <input
               type="text"
@@ -29,7 +29,7 @@ const Index = () => {
 
           <div className="stock-chip w-fit mb-6">AAPL Apple Inc.</div>
 
-          <h2 className="text-white text-lg font-bold mb-4">Popular Stocks</h2>
+          <h2 className="text-[#343a40] dark:text-white text-lg font-bold mb-4">Popular Stocks</h2>
           <div className="flex gap-3 mb-6">
             {['Tesla', 'Amazon', 'Meta'].map(stock => (
               <button key={stock} className="stock-chip">
@@ -38,8 +38,8 @@ const Index = () => {
             ))}
           </div>
 
-          <h2 className="text-white text-lg font-bold mb-4">Time Period</h2>
-          <div className="flex bg-[#2e4328] rounded-lg p-1 mb-6">
+          <h2 className="text-[#343a40] dark:text-white text-lg font-bold mb-4">Time Period</h2>
+          <div className="flex bg-[#e9ecef] dark:bg-[#2e4328] rounded-lg p-1 mb-6 transition-colors duration-300">
             {periods.map(period => (
               <button
                 key={period}
@@ -54,7 +54,7 @@ const Index = () => {
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="text-white font-medium mb-2 block">Start Date</label>
+              <label className="text-[#343a40] dark:text-white font-medium mb-2 block">Start Date</label>
               <input
                 type="text"
                 placeholder="MM/DD/YYYY"
@@ -62,7 +62,7 @@ const Index = () => {
               />
             </div>
             <div>
-              <label className="text-white font-medium mb-2 block">End Date</label>
+              <label className="text-[#343a40] dark:text-white font-medium mb-2 block">End Date</label>
               <input
                 type="text"
                 placeholder="MM/DD/YYYY"
@@ -71,7 +71,7 @@ const Index = () => {
             </div>
           </div>
 
-          <p className="text-[#a2c398] text-sm">Data Points: 252 (daily)</p>
+          <p className="text-[#6c757d] dark:text-[#a2c398] text-sm">Data Points: 252 (daily)</p>
         </div>
       </div>
     </div>

@@ -106,14 +106,14 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
           <div className="relative bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <p className="text-sm text-[#426039] dark:text-[#a2c398]">Expected Return</p>
+                <p className="text-sm text-[#426039] dark:text-[#a2c398]">Return</p>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
                       <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="top" align="center" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[60]">
+                  <TooltipContent side="top" align="center" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[9999]">
                     <p className="text-[#2e4328] dark:text-white text-sm">
                       The anticipated annual return of the portfolio based on historical data. 
                       A positive value (green) indicates expected profits, while negative (red) suggests potential losses.
@@ -145,7 +145,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
                       <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="top" align="center" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[60]">
+                  <TooltipContent side="top" align="center" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[9999]">
                     <p className="text-[#2e4328] dark:text-white text-sm">
                       Measures the portfolio's risk level through price fluctuations. 
                       Lower volatility (green) indicates stability, while higher values (red) suggest more risk.
@@ -167,14 +167,14 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
           <div className="relative bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <p className="text-sm text-[#426039] dark:text-[#a2c398]">Sharpe Ratio</p>
+                <p className="text-sm text-[#426039] dark:text-[#a2c398]">Sharpe</p>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
                       <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="top" align="center" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[60]">
+                  <TooltipContent side="top" align="center" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[9999]">
                     <p className="text-[#2e4328] dark:text-white text-sm">
                       A measure of risk-adjusted returns. Higher values (green) indicate better returns per unit of risk.
                       Values above 1 are considered good, above 2 excellent.

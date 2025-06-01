@@ -121,34 +121,34 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
     if (isVolatility) {
       if (isCrypto) {
         return value <= 3 
-          ? 'text-emerald-500 dark:text-emerald-400'
+          ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]'
           : value <= 6
-            ? 'text-amber-500 dark:text-amber-400'
+            ? 'text-amber-500 dark:text-amber-400 [text-shadow:0_0_10px_rgba(245,158,11,0.3)]'
             : value <= 10
-              ? 'text-orange-500 dark:text-orange-400'
-              : 'text-red-500 dark:text-red-400';
+              ? 'text-orange-500 dark:text-orange-400 [text-shadow:0_0_10px_rgba(249,115,22,0.3)]'
+              : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
       } else {
         return value <= 2.5
-          ? 'text-emerald-500 dark:text-emerald-400'
+          ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]'
           : value <= 4
-            ? 'text-amber-500 dark:text-amber-400'
-            : 'text-red-500 dark:text-red-400';
+            ? 'text-amber-500 dark:text-amber-400 [text-shadow:0_0_10px_rgba(245,158,11,0.3)]'
+            : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
       }
     }
 
-    // Sharpe Ratio colors
+    // Sharpe Ratio colors with neon effect
     if (isCrypto) {
       return value >= 2 
-        ? 'text-emerald-500 dark:text-emerald-400'
+        ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]'
         : value >= 1
-          ? 'text-amber-500 dark:text-amber-400'
-          : 'text-red-500 dark:text-red-400';
+          ? 'text-amber-500 dark:text-amber-400 [text-shadow:0_0_10px_rgba(245,158,11,0.3)]'
+          : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
     } else {
       return value >= 1.5 
-        ? 'text-emerald-500 dark:text-emerald-400'
+        ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]'
         : value >= 1
-          ? 'text-amber-500 dark:text-amber-400'
-          : 'text-red-500 dark:text-red-400';
+          ? 'text-amber-500 dark:text-amber-400 [text-shadow:0_0_10px_rgba(245,158,11,0.3)]'
+          : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
     }
   };
 

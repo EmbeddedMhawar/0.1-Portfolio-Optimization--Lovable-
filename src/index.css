@@ -21,10 +21,9 @@
   
   body {
     font-family: 'Inter', sans-serif;
-    @apply bg-[#f8f9fa] dark:bg-[#162013] text-foreground transition-colors duration-700;
+    @apply bg-[#f4f7f5] dark:bg-[#162013] text-foreground transition-colors duration-700;
   }
 
-  /* Theme toggle ripple effect */
   .theme-toggle-ripple {
     @apply relative overflow-hidden;
   }
@@ -33,8 +32,8 @@
     @apply absolute inset-0 rounded-lg;
     content: '';
     background: radial-gradient(circle at center, 
-      rgba(255, 255, 255, 0.8) 0%,
-      rgba(255, 255, 255, 0) 70%
+      rgba(144, 238, 144, 0.3) 0%,
+      rgba(144, 238, 144, 0) 70%
     );
     transform: scale(0);
     opacity: 0;
@@ -48,31 +47,34 @@
 }
 
 .search-input {
-  @apply bg-[#e2e8e4] dark:bg-[#2e4328] text-[#2e4328] dark:text-white placeholder:text-[#426039] dark:placeholder:text-[#a2c398] rounded-lg;
-  @apply focus:ring-0 focus:outline-none;
+  @apply bg-[#e8f0e9] dark:bg-[#2e4328] text-[#2e4328] dark:text-white placeholder:text-[#426039] dark:placeholder:text-[#a2c398] rounded-lg;
+  @apply focus:ring-2 focus:ring-[#426039] focus:outline-none;
   @apply transition-colors duration-300;
 }
 
 .stock-chip {
-  @apply bg-[#e2e8e4] dark:bg-[#2e4328] text-[#2e4328] dark:text-white rounded-lg px-4 py-2 text-sm font-medium;
-  @apply hover:bg-[#d1ddd5] dark:hover:bg-[#426039];
+  @apply bg-[#e8f0e9] dark:bg-[#2e4328] text-[#2e4328] dark:text-white rounded-lg px-4 py-2 text-sm font-medium;
+  @apply hover:bg-[#d4e6d7] dark:hover:bg-[#426039];
   @apply transition-colors duration-300;
 }
 
 .time-period-button {
-  @apply bg-[#e2e8e4] dark:bg-[#2e4328] text-[#426039] dark:text-[#a2c398] rounded-lg px-4 py-2;
-  @apply data-[active=true]:bg-white dark:data-[active=true]:bg-[#162013] data-[active=true]:text-[#2e4328] dark:data-[active=true]:text-white;
+  @apply bg-[#e8f0e9] dark:bg-[#2e4328] text-[#426039] dark:text-[#a2c398] rounded-lg px-4 py-2;
+  @apply data-[active=true]:bg-[#d4e6d7] dark:data-[active=true]:bg-[#162013] data-[active=true]:text-[#2e4328] dark:data-[active=true]:text-white;
+  @apply hover:bg-[#d4e6d7] dark:hover:bg-[#3a5432];
   @apply transition-colors duration-300;
 }
 
 .date-input {
-  @apply bg-white dark:bg-[#21301c] border border-[#d1ddd5] dark:border-[#426039] text-[#2e4328] dark:text-white;
+  @apply bg-white dark:bg-[#21301c] border border-[#d4e6d7] dark:border-[#426039] text-[#2e4328] dark:text-white;
   @apply placeholder:text-[#426039] dark:placeholder:text-[#a2c398] rounded-lg px-4 py-2;
-  @apply focus:ring-0 focus:outline-none focus:border-[#426039] dark:focus:border-[#426039];
+  @apply focus:ring-2 focus:ring-[#426039] focus:outline-none focus:border-[#426039] dark:focus:border-[#426039];
   @apply transition-colors duration-300;
 }
 
 .header-button {
-  @apply bg-[#e2e8e4] dark:bg-[#2e4328] text-[#2e4328] dark:text-white rounded-lg p-2;
-  @apply hover:bg-[#d1ddd5] dark:hover:bg-[#426039] transition-colors duration-300;
+  @apply bg-[#e8f0e9] dark:bg-[#2e4328] text-[#2e4328] dark:text-white rounded-lg p-2;
+  @apply hover:bg-[#d4e6d7] dark:hover:bg-[#426039];
+  @apply focus:ring-2 focus:ring-[#426039] focus:outline-none;
+  @apply transition-colors duration-300;
 }

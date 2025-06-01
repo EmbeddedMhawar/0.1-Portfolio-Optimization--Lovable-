@@ -12,11 +12,11 @@ export default {
     extend: {
       colors: {
         border: {
-          DEFAULT: '#d1ddd5',
+          DEFAULT: '#d4e6d7',
           dark: '#2e4328'
         },
         input: {
-          DEFAULT: '#e2e8e4',
+          DEFAULT: '#e8f0e9',
           dark: '#2e4328'
         },
         ring: {
@@ -24,7 +24,7 @@ export default {
           dark: '#426039'
         },
         background: {
-          DEFAULT: '#f8f9fa',
+          DEFAULT: '#f4f7f5',
           dark: '#162013'
         },
         foreground: {
@@ -36,17 +36,17 @@ export default {
           foreground: '#ffffff'
         },
         secondary: {
-          DEFAULT: '#e2e8e4',
+          DEFAULT: '#e8f0e9',
           dark: '#21301c',
           foreground: '#2e4328'
         },
         muted: {
-          DEFAULT: '#e2e8e4',
+          DEFAULT: '#e8f0e9',
           dark: '#21301c',
           foreground: '#426039'
         },
         accent: {
-          DEFAULT: '#e2e8e4',
+          DEFAULT: '#e8f0e9',
           dark: '#21301c',
           foreground: '#2e4328'
         }

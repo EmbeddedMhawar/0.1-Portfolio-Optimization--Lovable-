@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Header } from '../components/Header';
-import { Search, X } from 'lucide-react';
+import { Search, X, ArrowRight } from 'lucide-react';
 import { availableStocks } from '../utils/stockApi';
 
 const Index = () => {
@@ -25,6 +25,11 @@ const Index = () => {
   const handleStockRemove = useCallback((symbol: string) => {
     setSelectedStocks(prev => prev.filter(s => s !== symbol));
   }, []);
+
+  const handleOptimize = () => {
+    // Optimization logic will be implemented here
+    console.log('Optimizing portfolio...');
+  };
 
   return (
     <div className="min-h-screen bg-[#f4f7f5] dark:bg-[#162013] transition-colors duration-700">
@@ -109,7 +114,7 @@ const Index = () => {
             ))}
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
               <label className="text-[#2e4328] dark:text-white font-medium mb-2 block">Start Date</label>
               <input
@@ -128,7 +133,16 @@ const Index = () => {
             </div>
           </div>
 
-          <p className="text-[#426039] dark:text-[#a2c398] text-sm">Data Points: 252 (daily)</p>
+          <p className="text-[#426039] dark:text-[#a2c398] text-sm mb-6">Data Points: 252 (daily)</p>
+
+          <button
+            onClick={handleOptimize}
+            disabled={selectedStocks.length === 0}
+            className="flex items-center justify-center gap-2 w-full bg-[#2e4328] hover:bg-[#426039] disabled:bg-[#e8f0e9] dark:disabled:bg-[#2e4328] text-white disabled:text-[#426039] dark:disabled:text-[#a2c398] rounded-lg py-4 font-medium transition-colors duration-300"
+          >
+            Optimize Portfolio
+            <ArrowRight className="h-5 w-5" />
+          </button>
         </div>
       </div>
     </div>

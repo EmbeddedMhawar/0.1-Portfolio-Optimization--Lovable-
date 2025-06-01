@@ -112,43 +112,45 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
   };
 
   const getMetricColor = (value: number, isReturn = false, isVolatility = false) => {
+    const neonEffect = 'dark:[text-shadow:0_0_10px_rgba(var(--neon-color),0.3)]';
+    
     if (isReturn) {
       return value >= 0 
-        ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]' 
-        : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
+        ? `text-emerald-500 dark:text-emerald-400 ${neonEffect}`.replace('var(--neon-color)', '16,185,129')
+        : `text-red-500 dark:text-red-400 ${neonEffect}`.replace('var(--neon-color)', '239,68,68');
     }
 
     if (isVolatility) {
       if (isCrypto) {
-        return value <= 3 
-          ? 'text-emerald-500 dark:text-emerald-400'
-          : value <= 6
-            ? 'text-amber-500 dark:text-amber-400'
-            : value <= 10
-              ? 'text-orange-500 dark:text-orange-400'
-              : 'text-red-500 dark:text-red-400';
+        if (value <= 3) 
+          return `text-emerald-500 dark:text-emerald-400 ${neonEffect}`.replace('var(--neon-color)', '16,185,129');
+        if (value <= 6)
+          return `text-amber-500 dark:text-amber-400 ${neonEffect}`.replace('var(--neon-color)', '245,158,11');
+        if (value <= 10)
+          return `text-orange-500 dark:text-orange-400 ${neonEffect}`.replace('var(--neon-color)', '249,115,22');
+        return `text-red-500 dark:text-red-400 ${neonEffect}`.replace('var(--neon-color)', '239,68,68');
       } else {
-        return value <= 2.5
-          ? 'text-emerald-500 dark:text-emerald-400'
-          : value <= 4
-            ? 'text-amber-500 dark:text-amber-400'
-            : 'text-red-500 dark:text-red-400';
+        if (value <= 2.5)
+          return `text-emerald-500 dark:text-emerald-400 ${neonEffect}`.replace('var(--neon-color)', '16,185,129');
+        if (value <= 4)
+          return `text-amber-500 dark:text-amber-400 ${neonEffect}`.replace('var(--neon-color)', '245,158,11');
+        return `text-red-500 dark:text-red-400 ${neonEffect}`.replace('var(--neon-color)', '239,68,68');
       }
     }
 
     // Sharpe Ratio colors
     if (isCrypto) {
-      return value >= 2 
-        ? 'text-emerald-500 dark:text-emerald-400'
-        : value >= 1
-          ? 'text-amber-500 dark:text-amber-400'
-          : 'text-red-500 dark:text-red-400';
+      if (value >= 2)
+        return `text-emerald-500 dark:text-emerald-400 ${neonEffect}`.replace('var(--neon-color)', '16,185,129');
+      if (value >= 1)
+        return `text-amber-500 dark:text-amber-400 ${neonEffect}`.replace('var(--neon-color)', '245,158,11');
+      return `text-red-500 dark:text-red-400 ${neonEffect}`.replace('var(--neon-color)', '239,68,68');
     } else {
-      return value >= 1.5 
-        ? 'text-emerald-500 dark:text-emerald-400'
-        : value >= 1
-          ? 'text-amber-500 dark:text-amber-400'
-          : 'text-red-500 dark:text-red-400';
+      if (value >= 1.5)
+        return `text-emerald-500 dark:text-emerald-400 ${neonEffect}`.replace('var(--neon-color)', '16,185,129');
+      if (value >= 1)
+        return `text-amber-500 dark:text-amber-400 ${neonEffect}`.replace('var(--neon-color)', '245,158,11');
+      return `text-red-500 dark:text-red-400 ${neonEffect}`.replace('var(--neon-color)', '239,68,68');
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Header } from '../components/Header';
-import { MagnifyingGlass, Sun } from 'lucide-react';
+import { Glasses as MagnifyingGlass, Sun } from 'lucide-react';
 
 const Index = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('1Y');

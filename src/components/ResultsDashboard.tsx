@@ -37,7 +37,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
       <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#d4e6d7] dark:border-[#2e4328]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#426039] dark:border-[#a2c398] border-t-[#2e4328] dark:border-t-[#426039] rounded-full animate-spin mx-auto mb-4"></div>
-          <h3 className="text-lg font-semibold text-[#2e4328] dark:text-white mb-2">Optimizing Portfolio...</h3>
+          <h3 className="text-lg font-semibold portfolio-text mb-2">Optimizing Portfolio...</h3>
           <div className="space-y-2 text-sm text-[#426039] dark:text-[#a2c398]">
             <p>• Calculating covariance matrix...</p>
             <p>• Formulating constraints...</p>
@@ -56,7 +56,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
           <div className="w-16 h-16 bg-[#e8f0e9] dark:bg-[#2e4328] rounded-full flex items-center justify-center mx-auto mb-4">
             <TrendingUp className="w-8 h-8" />
           </div>
-          <h3 className="text-lg font-medium mb-2 text-[#2e4328] dark:text-white">Ready to Optimize</h3>
+          <h3 className="text-lg font-medium mb-2 portfolio-text">Ready to Optimize</h3>
           <p className="text-sm">Select your assets and click optimize to see the results.</p>
         </div>
       </div>
@@ -176,7 +176,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
               align="center" 
               className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[60]"
             >
-              <p className="text-[#2e4328] dark:text-white text-sm">
+              <p className="portfolio-text text-sm">
                 {isVolatility 
                   ? getVolatilityTooltip(value)
                   : isReturn
@@ -263,7 +263,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
 
       {/* Portfolio Allocation */}
       <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-6 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328]">
-        <h3 className="text-lg font-semibold text-[#2e4328] dark:text-white mb-6 flex items-center gap-2">
+        <h3 className="text-lg font-semibold portfolio-text mb-6 flex items-center gap-2">
           Portfolio Allocation
           <TooltipProvider>
             <Tooltip>
@@ -271,7 +271,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
                 <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
               </TooltipTrigger>
               <TooltipContent className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3">
-                <p className="text-[#2e4328] dark:text-white text-sm">
+                <p className="portfolio-text text-sm">
                   Click on a stock to see detailed information
                 </p>
               </TooltipContent>
@@ -289,14 +289,14 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
                 <div key={item.asset} className="group">
                   <button
                     onClick={() => setExpandedAsset(expandedAsset === item.asset ? null : item.asset)}
-                    className="w-full flex items-center justify-between p-3 rounded-lg bg-white/5 dark:bg-[#2e4328]/30 border border-[#d4e6d7]/20 dark:border-[#2e4328]/50 hover:bg-white/10 dark:hover:bg-[#2e4328]/50 transition-all duration-300"
+                    className="portfolio-asset w-full flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
                       <div 
                         className="w-2 h-2 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]"
                         style={{ backgroundColor: item.color }}
                       />
-                      <span className="text-[#2e4328] dark:text-white font-medium">
+                      <span className="portfolio-text font-medium">
                         {item.asset}
                       </span>
                     </div>
@@ -316,19 +316,19 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
                           <p className="text-[#426039] dark:text-[#a2c398]">Company Name</p>
-                          <p className="text-[#2e4328] dark:text-white font-medium">
+                          <p className="portfolio-text font-medium">
                             {stockInfo?.name || item.asset}
                           </p>
                         </div>
                         <div>
                           <p className="text-[#426039] dark:text-[#a2c398]">Exchange</p>
-                          <p className="text-[#2e4328] dark:text-white font-medium">
+                          <p className="portfolio-text font-medium">
                             {stockInfo?.exchange || 'N/A'}
                           </p>
                         </div>
                         <div>
                           <p className="text-[#426039] dark:text-[#a2c398]">Weight</p>
-                          <p className="text-[#2e4328] dark:text-white font-medium">
+                          <p className="portfolio-text font-medium">
                             {(item.weight * 100).toFixed(2)}%
                           </p>
                         </div>

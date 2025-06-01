@@ -10,25 +10,33 @@ export interface Stock {
   symbol: string;
   name: string;
   exchange?: string;
-  type?: string;
+  type: 'stock' | 'crypto';
 }
 
-export const availableStocks = [
-  { symbol: 'AAPL', name: 'Apple Inc.', exchange: 'NASDAQ' },
-  { symbol: 'MSFT', name: 'Microsoft Corporation', exchange: 'NASDAQ' },
-  { symbol: 'GOOGL', name: 'Alphabet Inc.', exchange: 'NASDAQ' },
-  { symbol: 'AMZN', name: 'Amazon.com Inc.', exchange: 'NASDAQ' },
-  { symbol: 'META', name: 'Meta Platforms Inc.', exchange: 'NASDAQ' },
-  { symbol: 'TSLA', name: 'Tesla Inc.', exchange: 'NASDAQ' },
-  { symbol: 'NVDA', name: 'NVIDIA Corporation', exchange: 'NASDAQ' },
-  { symbol: 'JPM', name: 'JPMorgan Chase & Co.', exchange: 'NYSE' },
-  { symbol: 'V', name: 'Visa Inc.', exchange: 'NYSE' },
-  { symbol: 'JNJ', name: 'Johnson & Johnson', exchange: 'NYSE' },
-  { symbol: 'WMT', name: 'Walmart Inc.', exchange: 'NYSE' },
-  { symbol: 'PG', name: 'Procter & Gamble Co.', exchange: 'NYSE' },
-  { symbol: 'MA', name: 'Mastercard Inc.', exchange: 'NYSE' },
-  { symbol: 'UNH', name: 'UnitedHealth Group Inc.', exchange: 'NYSE' },
-  { symbol: 'HD', name: 'Home Depot Inc.', exchange: 'NYSE' }
+export const availableStocks: Stock[] = [
+  // Stocks
+  { symbol: 'AAPL', name: 'Apple Inc.', exchange: 'NASDAQ', type: 'stock' },
+  { symbol: 'MSFT', name: 'Microsoft Corporation', exchange: 'NASDAQ', type: 'stock' },
+  { symbol: 'GOOGL', name: 'Alphabet Inc.', exchange: 'NASDAQ', type: 'stock' },
+  { symbol: 'AMZN', name: 'Amazon.com Inc.', exchange: 'NASDAQ', type: 'stock' },
+  { symbol: 'META', name: 'Meta Platforms Inc.', exchange: 'NASDAQ', type: 'stock' },
+  { symbol: 'TSLA', name: 'Tesla Inc.', exchange: 'NASDAQ', type: 'stock' },
+  { symbol: 'NVDA', name: 'NVIDIA Corporation', exchange: 'NASDAQ', type: 'stock' },
+  { symbol: 'JPM', name: 'JPMorgan Chase & Co.', exchange: 'NYSE', type: 'stock' },
+  { symbol: 'V', name: 'Visa Inc.', exchange: 'NYSE', type: 'stock' },
+  { symbol: 'JNJ', name: 'Johnson & Johnson', exchange: 'NYSE', type: 'stock' },
+  
+  // Cryptocurrencies
+  { symbol: 'BTC-USD', name: 'Bitcoin USD', type: 'crypto' },
+  { symbol: 'ETH-USD', name: 'Ethereum USD', type: 'crypto' },
+  { symbol: 'BNB-USD', name: 'Binance Coin USD', type: 'crypto' },
+  { symbol: 'SOL-USD', name: 'Solana USD', type: 'crypto' },
+  { symbol: 'ADA-USD', name: 'Cardano USD', type: 'crypto' },
+  { symbol: 'DOT-USD', name: 'Polkadot USD', type: 'crypto' },
+  { symbol: 'DOGE-USD', name: 'Dogecoin USD', type: 'crypto' },
+  { symbol: 'AVAX-USD', name: 'Avalanche USD', type: 'crypto' },
+  { symbol: 'MATIC-USD', name: 'Polygon USD', type: 'crypto' },
+  { symbol: 'LINK-USD', name: 'Chainlink USD', type: 'crypto' }
 ];
 
 export const availablePeriods = [
@@ -40,13 +48,15 @@ export const availablePeriods = [
   { value: '5y', label: '5 Years' }
 ];
 
-export async function searchStocks(query: string): Promise<Stock[]> {
+export async function searchStocks(query: string, type?: 'stock' | 'crypto'): Promise<Stock[]> {
   if (!query) return [];
   
   const normalizedQuery = query.toLowerCase();
   return availableStocks.filter(stock => 
-    stock.symbol.toLowerCase().includes(normalizedQuery) ||
-    stock.name.toLowerCase().includes(normalizedQuery)
+    (!type || stock.type === type) && (
+      stock.symbol.toLowerCase().includes(normalizedQuery) ||
+      stock.name.toLowerCase().includes(normalizedQuery)
+    )
   );
 }
 
@@ -88,9 +98,10 @@ function generateMockPriceData(symbols: string[], period: string): StockData[] {
                    period === '2y' ? 730 : 1825;
 
   return symbols.map(symbol => {
-    const basePrice = Math.random() * 100 + 50;
-    const trend = Math.random() * 0.001 - 0.0005;
-    const volatility = Math.random() * 0.02;
+    const isCrypto = symbol.includes('-USD');
+    const basePrice = isCrypto ? Math.random() * 1000 + 100 : Math.random() * 100 + 50;
+    const trend = isCrypto ? Math.random() * 0.002 - 0.001 : Math.random() * 0.001 - 0.0005;
+    const volatility = isCrypto ? Math.random() * 0.05 : Math.random() * 0.02;
 
     const prices: number[] = [];
     const dates: string[] = [];

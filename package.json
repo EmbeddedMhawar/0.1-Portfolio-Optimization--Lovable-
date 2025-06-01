@@ -27,7 +27,8 @@
     "react-router-dom": "^6.26.2",
     "recharts": "^2.12.3",
     "sonner": "^1.4.3",
-    "tailwind-merge": "^2.2.1"
+    "tailwind-merge": "^2.2.1",
+    "yahoo-finance2": "^2.9.1"
   },
   "devDependencies": {
     "@types/node": "^22.5.5",

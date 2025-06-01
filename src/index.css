@@ -81,7 +81,7 @@
 
 /* Portfolio Styles */
 .portfolio-text {
-  @apply font-inter text-[#2e4328] dark:text-white;
+  @apply font-sans text-[#2e4328] dark:text-white;
 }
 
 .portfolio-asset {

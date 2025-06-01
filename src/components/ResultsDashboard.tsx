@@ -162,28 +162,40 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
     isVolatility = false
   }) => (
     <div className="relative bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
-      <div className="flex items-center gap-2 mb-2">
-        <p className="text-sm text-[#426039] dark:text-[#a2c398]">{label}</p>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
-              <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent 
-            side="top" 
-            align="center" 
-            className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[60]"
-          >
-            <p className="text-[#2e4328] dark:text-white text-sm">
-              {isVolatility 
-                ? getVolatilityTooltip(value)
-                : isReturn
-                  ? getExpectedReturnTooltip(value)
-                  : getSharpeRatioTooltip(value)}
-            </p>
-          </TooltipContent>
-        </Tooltip>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-[#426039] dark:text-[#a2c398]">{label}</p>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
+                <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent 
+              side="top" 
+              align="center" 
+              className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[60]"
+            >
+              <p className="text-[#2e4328] dark:text-white text-sm">
+                {isVolatility 
+                  ? getVolatilityTooltip(value)
+                  : isReturn
+                    ? getExpectedReturnTooltip(value)
+                    : getSharpeRatioTooltip(value)}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        {isVolatility && (
+          <div className="flex items-center gap-2 text-[#426039] dark:text-[#a2c398] text-xs">
+            <span>Crypto</span>
+            <Switch
+              checked={isCrypto}
+              onCheckedChange={setIsCrypto}
+              className="data-[state=checked]:bg-[#426039] h-4 w-7"
+            />
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-2">
         <Icon className={`w-6 h-6 ${getMetricColor(value, isReturn, isVolatility)}`} />
@@ -196,17 +208,6 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
 
   return (
     <div className="space-y-6">
-      {/* Asset Type Toggle */}
-      <div className="flex items-center justify-end gap-2 text-[#426039] dark:text-[#a2c398]">
-        <span className="text-sm">Traditional Assets</span>
-        <Switch
-          checked={isCrypto}
-          onCheckedChange={setIsCrypto}
-          className="data-[state=checked]:bg-[#426039]"
-        />
-        <span className="text-sm">Crypto Assets</span>
-      </div>
-
       {/* Status Banner */}
       <div className={`p-4 rounded-xl flex items-center space-x-3 ${
         results.constraintsMet 

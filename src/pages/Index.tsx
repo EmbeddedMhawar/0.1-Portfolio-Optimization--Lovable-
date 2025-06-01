@@ -1,13 +1,20 @@
 import React, { useState, useCallback } from 'react';
 import { Header } from '../components/Header';
-import { Search, X, ArrowRight } from 'lucide-react';
+import { Search, X, ArrowRight, Calendar as CalendarIcon } from 'lucide-react';
 import { availableStocks } from '../utils/stockApi';
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const Index = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('1Y');
   const periods = ['1Y', '3Y', '5Y', '10Y', 'MAX'];
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStocks, setSelectedStocks] = useState<string[]>([]);
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
 
   const filteredStocks = availableStocks.filter(stock => 
     (stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -117,19 +124,53 @@ const Index = () => {
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
               <label className="text-[#2e4328] dark:text-white font-medium mb-2 block">Start Date</label>
-              <input
-                type="text"
-                placeholder="MM/DD/YYYY"
-                className="date-input w-full h-14"
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "date-input w-full h-14 justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-white dark:bg-[#21301c]">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div>
               <label className="text-[#2e4328] dark:text-white font-medium mb-2 block">End Date</label>
-              <input
-                type="text"
-                placeholder="MM/DD/YYYY"
-                className="date-input w-full h-14"
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "date-input w-full h-14 justify-start text-left font-normal",
+                      !endDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-white dark:bg-[#21301c]">
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={setEndDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 

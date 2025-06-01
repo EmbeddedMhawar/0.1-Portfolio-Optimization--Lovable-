@@ -31,6 +31,14 @@ const Index = () => {
     !selectedStocks.includes(stock.symbol)
   );
 
+  const popularCryptos = availableStocks.filter(stock => 
+    stock.type === 'crypto'
+  ).slice(0, 3);
+
+  const popularStocks = availableStocks.filter(stock => 
+    stock.type === 'stock'
+  ).slice(0, 3);
+
   const handleStockSelect = useCallback((symbol: string) => {
     if (selectedStocks.length < 10) {
       setSelectedStocks(prev => [...prev, symbol]);
@@ -146,7 +154,7 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Input Panel */}
           <div className="flex flex-col space-y-6">
-            <h1 className="text-[#2e4328] dark:text-white text-[32px] font-bold">Optimize Portfolio</h1>
+            <h1 className="portfolio-text text-[32px] font-bold">Optimize Portfolio</h1>
 
             <div className="relative">
               <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
@@ -166,7 +174,7 @@ const Index = () => {
                     <button
                       key={stock.symbol}
                       onClick={() => handleStockSelect(stock.symbol)}
-                      className="w-full px-4 py-3 text-left hover:bg-[#e8f0e9] dark:hover:bg-[#2e4328] text-[#2e4328] dark:text-white transition-colors duration-300"
+                      className="w-full px-4 py-3 text-left hover:bg-[#e8f0e9] dark:hover:bg-[#2e4328] portfolio-text transition-colors duration-300"
                     >
                       <span className="font-medium">{stock.symbol}</span> - {stock.name}
                     </button>
@@ -219,9 +227,9 @@ const Index = () => {
             {!csvData && (
               <>
                 <div>
-                  <h2 className="text-[#2e4328] dark:text-white text-lg font-bold mb-4">Popular Stocks</h2>
+                  <h2 className="portfolio-text text-lg font-bold mb-4">Popular Stocks</h2>
                   <div className="flex gap-3">
-                    {availableStocks.slice(0, 3).map(stock => (
+                    {popularStocks.map(stock => (
                       <button
                         key={stock.symbol}
                         className="stock-chip"
@@ -235,7 +243,23 @@ const Index = () => {
                 </div>
 
                 <div>
-                  <h2 className="text-[#2e4328] dark:text-white text-lg font-bold mb-4">Time Period</h2>
+                  <h2 className="portfolio-text text-lg font-bold mb-4">Popular Cryptocurrencies</h2>
+                  <div className="flex gap-3">
+                    {popularCryptos.map(crypto => (
+                      <button
+                        key={crypto.symbol}
+                        className="stock-chip"
+                        onClick={() => handleStockSelect(crypto.symbol)}
+                        disabled={selectedStocks.includes(crypto.symbol)}
+                      >
+                        {crypto.symbol.replace('-USD', '')}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h2 className="portfolio-text text-lg font-bold mb-4">Time Period</h2>
                   <div className="flex bg-[#e8f0e9] dark:bg-[#2e4328] rounded-lg p-1">
                     {periods.map(period => (
                       <button
@@ -252,7 +276,7 @@ const Index = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[#2e4328] dark:text-white font-medium mb-2 block">Start Date</label>
+                    <label className="portfolio-text font-medium mb-2 block">Start Date</label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -277,7 +301,7 @@ const Index = () => {
                     </Popover>
                   </div>
                   <div>
-                    <label className="text-[#2e4328] dark:text-white font-medium mb-2 block">End Date</label>
+                    <label className="portfolio-text font-medium mb-2 block">End Date</label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button

@@ -100,93 +100,92 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
       </div>
 
       {/* Metrics Cards */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
-          <div className="flex items-center justify-between">
-            <div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <TooltipProvider>
+          {/* Expected Return Card */}
+          <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300 h-[120px] flex flex-col justify-between">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <p className="text-sm text-[#426039] dark:text-[#a2c398]">Expected Return</p>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
                       <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs">
-                      <p className="text-[#2e4328] dark:text-white text-sm">
-                        The anticipated annual return of the portfolio based on historical data. 
-                        A positive value (green) indicates expected profits, while negative (red) suggests potential losses.
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-50">
+                    <p className="text-[#2e4328] dark:text-white text-sm">
+                      The anticipated annual return of the portfolio based on historical data. 
+                      A positive value (green) indicates expected profits, while negative (red) suggests potential losses.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
-              <p className={`text-2xl font-bold ${getMetricColor(results.metrics.expectedReturn, true)}`}>
-                {(results.metrics.expectedReturn * 100).toFixed(2)}%
-              </p>
+              {results.metrics.expectedReturn >= 0 ? (
+                <TrendingUp className={`w-8 h-8 ${getMetricColor(results.metrics.expectedReturn, true)}`} />
+              ) : (
+                <TrendingDown className={`w-8 h-8 ${getMetricColor(results.metrics.expectedReturn, true)}`} />
+              )}
             </div>
-            {results.metrics.expectedReturn >= 0 ? (
-              <TrendingUp className={`w-8 h-8 ${getMetricColor(results.metrics.expectedReturn, true)}`} />
-            ) : (
-              <TrendingDown className={`w-8 h-8 ${getMetricColor(results.metrics.expectedReturn, true)}`} />
-            )}
+            <p className={`text-2xl font-bold ${getMetricColor(results.metrics.expectedReturn, true)}`}>
+              {(results.metrics.expectedReturn * 100).toFixed(2)}%
+            </p>
           </div>
-        </div>
 
-        <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
-          <div className="flex items-center justify-between">
-            <div>
+          {/* Volatility Card */}
+          <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300 h-[120px] flex flex-col justify-between">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <p className="text-sm text-[#426039] dark:text-[#a2c398]">Volatility</p>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
                       <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs">
-                      <p className="text-[#2e4328] dark:text-white text-sm">
-                        Measures the portfolio's risk level through price fluctuations. 
-                        Lower volatility (green) indicates stability, while higher values (red) suggest more risk.
-                        Calculated as the standard deviation of returns.
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-50">
+                    <p className="text-[#2e4328] dark:text-white text-sm">
+                      Measures the portfolio's risk level through price fluctuations. 
+                      Lower volatility (green) indicates stability, while higher values (red) suggest more risk.
+                      Calculated as the standard deviation of returns.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
-              <p className={`text-2xl font-bold ${getMetricColor(results.metrics.volatility)}`}>
-                {(results.metrics.volatility * 100).toFixed(2)}%
-              </p>
+              <TrendingDown className={`w-8 h-8 ${getMetricColor(results.metrics.volatility)}`} />
             </div>
-            <TrendingDown className={`w-8 h-8 ${getMetricColor(results.metrics.volatility)}`} />
+            <p className={`text-2xl font-bold ${getMetricColor(results.metrics.volatility)}`}>
+              {(results.metrics.volatility * 100).toFixed(2)}%
+            </p>
           </div>
-        </div>
 
-        <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
-          <div className="flex items-center justify-between">
-            <div>
+          {/* Sharpe Ratio Card */}
+          <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300 h-[120px] flex flex-col justify-between">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <p className="text-sm text-[#426039] dark:text-[#a2c398]">Sharpe Ratio</p>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
                       <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs">
-                      <p className="text-[#2e4328] dark:text-white text-sm">
-                        A measure of risk-adjusted returns. Higher values (green) indicate better returns per unit of risk.
-                        Values above 1 are considered good, above 2 excellent.
-                        Calculated as (portfolio return - risk-free rate) / portfolio volatility.
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-50">
+                    <p className="text-[#2e4328] dark:text-white text-sm">
+                      A measure of risk-adjusted returns. Higher values (green) indicate better returns per unit of risk.
+                      Values above 1 are considered good, above 2 excellent.
+                      Calculated as (portfolio return - risk-free rate) / portfolio volatility.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
-              <p className={`text-2xl font-bold ${getMetricColor(results.metrics.sharpeRatio)}`}>
-                {results.metrics.sharpeRatio.toFixed(2)}
-              </p>
+              <Shield className={`w-8 h-8 ${getMetricColor(results.metrics.sharpeRatio)}`} />
             </div>
-            <Shield className={`w-8 h-8 ${getMetricColor(results.metrics.sharpeRatio)}`} />
+            <p className={`text-2xl font-bold ${getMetricColor(results.metrics.sharpeRatio)}`}>
+              {results.metrics.sharpeRatio.toFixed(2)}
+            </p>
           </div>
-        </div>
+        </TooltipProvider>
       </div>
 
       {/* Portfolio Allocation */}

@@ -78,3 +78,33 @@
   @apply focus:ring-2 focus:ring-[#426039] focus:outline-none;
   @apply transition-colors duration-300;
 }
+
+/* Calendar Dark Mode Styles */
+.dark .rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: #426039;
+  --rdp-background-color: #2e4328;
+  --rdp-accent-color-dark: #21301c;
+  --rdp-background-color-dark: #162013;
+  --rdp-outline: 2px solid var(--rdp-accent-color);
+  --rdp-outline-selected: 2px solid var(--rdp-accent-color);
+  @apply text-white;
+}
+
+.dark .rdp-day_selected, 
+.dark .rdp-day_selected:focus-visible, 
+.dark .rdp-day_selected:hover {
+  @apply bg-[#426039] text-white;
+}
+
+.dark .rdp-day:hover {
+  @apply bg-[#2e4328] text-white;
+}
+
+.dark .rdp-day_today {
+  @apply bg-[#2e4328] text-white font-bold;
+}
+
+.dark .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+  @apply bg-[#2e4328] text-white;
+}

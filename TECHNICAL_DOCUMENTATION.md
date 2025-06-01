@@ -7,6 +7,8 @@
 4. [User Interface](#user-interface)
 5. [Data Flow](#data-flow)
 6. [Technology Stack](#technology-stack)
+7. [Performance & Security](#performance--security)
+8. [Future Roadmap](#future-roadmap)
 
 ## System Architecture
 
@@ -34,7 +36,7 @@ graph TD
 ## Core Components
 
 ### Portfolio Optimizer
-The portfolio optimization engine (`portfolioOptimizer.ts`) implements the following key features:
+The portfolio optimization engine (`portfolioOptimizer.ts`) implements Modern Portfolio Theory with the following key features:
 
 ```mermaid
 graph LR
@@ -46,38 +48,73 @@ graph LR
     E --> F[Linear System Solver]
     F --> G[Optimal Weights]
     G --> H[Portfolio Metrics]
+    G --> I[Visualization Data]
 ```
 
-Key optimization steps:
-1. Matrix operations for portfolio calculations
-2. Returns matrix computation from price data
-3. Mean returns calculation
-4. Covariance matrix generation
-5. KKT (Karush-Kuhn-Tucker) system construction
-6. Linear system solving with LU decomposition
-7. Portfolio metrics calculation (return, volatility, Sharpe ratio)
+Key optimization components:
+
+1. Data Processing Layer
+   - Price data validation and cleaning
+   - Missing data interpolation
+   - Outlier detection and handling
+   - Returns matrix computation
+
+2. Optimization Core
+   - Mean returns calculation with adjustable lookback
+   - Covariance matrix with numerical stability
+   - KKT system formulation with constraints
+   - Multiple solver methods (LU, Cholesky, QR, SVD)
+
+3. Risk Management
+   - Portfolio risk metrics computation
+   - Sharpe ratio optimization
+   - Constraint validation and enforcement
+   - Risk-return tradeoff analysis
+
+4. Validation Layer
+   - Solution feasibility checks
+   - Numerical stability verification
+   - Constraint satisfaction testing
+   - Performance metrics computation
 
 ### UI Architecture
 
-The application uses a component-based architecture with the following main components:
+The application implements a modern, component-based architecture with dynamic theming and responsive design:
 
 ```mermaid
 graph TD
-    A[Index Page] --> B[ThemeProvider]
+    A[App Root] --> B[ThemeProvider]
     B --> C[IndexContent]
-    C --> D[Header]
-    C --> E[InputPanel]
-    C --> F[ResultsDashboard]
-    C --> G[AdvancedOptions]
-    C --> H[StepIndicator]
     
-    E --> I[File Upload]
-    E --> J[Target Return Slider]
-    E --> K[Optimize Button]
+    subgraph Main Components
+        C --> D[Header]
+        C --> E[InputPanel]
+        C --> F[ResultsDashboard]
+        C --> G[AdvancedOptions]
+        C --> H[StepIndicator]
+    end
     
-    F --> L[Status Banner]
-    F --> M[Metrics Cards]
-    F --> N[Charts]
+    subgraph Input Features
+        E --> I[File Upload]
+        E --> J[StockSelector]
+        E --> K[Target Return Slider]
+        E --> L[Optimize Button]
+        
+        J --> M[Search]
+        J --> N[Period Select]
+        J --> O[Stock List]
+    end
+    
+    subgraph Results Features
+        F --> P[Status Banner]
+        F --> Q[Metrics Cards]
+        F --> R[Portfolio Chart]
+        F --> S[Asset Details]
+        
+        Q --> T[Expected Return]
+        Q --> U[Volatility]
+        Q --> V[Sharpe Ratio]
+    end
 ```
 
 ## Technology Stack
@@ -168,31 +205,54 @@ function calculateReturnsMatrix(prices: number[][]): number[][] {
    - Optimized chart renderings
    - Responsive design with minimal reflows
 
-## Security & Data Validation
+## Performance & Security
 
-1. **Input Validation**
-   - CSV format verification
-   - Data type checking
-   - Numerical bounds validation
+1. **Performance Optimizations**
+   - Lazy loading of heavy components
+   - Optimized chart renderings with debouncing
+   - Memory-efficient matrix operations
+   - Caching strategies for frequently accessed data
+   - Responsive design with minimal reflows
+   - Background processing for intensive calculations
 
-2. **Error Handling**
-   - Graceful failure handling
+2. **Security Measures**
+   - Input validation for all data sources
+   - Numerical stability protection
+   - Error boundary implementation
+   - Rate limiting for API calls
+   - Data sanitization
+   - Secure data handling
+
+3. **Error Handling**
+   - Graceful degradation
    - User-friendly error messages
-   - State recovery mechanisms
+   - Automatic error recovery
+   - Detailed logging
+   - State preservation
+   - Error tracking analytics
 
-## Future Improvements
+## Future Roadmap
 
-1. **Algorithm Enhancements**
-   - Support for additional optimization objectives
-   - Alternative risk measures
-   - Multi-period optimization
-
-2. **UI Enhancements**
-   - Additional visualization options
+1. **Q3 2025**
+   - Real-time data integration
+   - Enhanced visualization options
+   - Mobile-optimized interface
+   - Portfolio comparison tools
    - Export functionality
-   - Real-time optimization updates
+   - Advanced charting features
 
-3. **Performance Optimization**
-   - Web worker implementation for heavy calculations
-   - Caching mechanisms
-   - Progressive loading for large datasets
+2. **Q4 2025**
+   - Multiple optimization strategies
+   - Machine learning integration
+   - Advanced risk metrics
+   - Custom constraint builder
+   - Backtesting framework
+   - Scenario analysis tools
+
+3. **Q1 2026**
+   - Multi-asset class support
+   - Advanced portfolio analytics
+   - Integration with external tools
+   - Collaborative features
+   - API access layer
+   - Custom strategy development

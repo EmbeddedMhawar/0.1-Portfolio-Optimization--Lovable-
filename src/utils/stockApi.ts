@@ -62,65 +62,39 @@ export async function searchStocks(query: string, type?: 'stock' | 'crypto'): Pr
 
 export async function fetchStockData(
   symbols: string[],
-  period: string,
+  period: string = '1y',
   interval: string = '1d'
 ): Promise<StockData[]> {
   try {
-    const endDate = new Date();
-    const startDate = new Date();
-    
-    // Calculate start date based on period
-    switch(period) {
-      case '1mo': startDate.setMonth(endDate.getMonth() - 1); break;
-      case '3mo': startDate.setMonth(endDate.getMonth() - 3); break;
-      case '6mo': startDate.setMonth(endDate.getMonth() - 6); break;
-      case '1y': startDate.setFullYear(endDate.getFullYear() - 1); break;
-      case '2y': startDate.setFullYear(endDate.getFullYear() - 2); break;
-      case '5y': startDate.setFullYear(endDate.getFullYear() - 5); break;
-      default: startDate.setFullYear(endDate.getFullYear() - 1);
-    }
+    const results = await Promise.all(
+      symbols.map(async (symbol) => {
+        try {
+          const queryOptions = {
+            period: period,
+            interval: interval,
+          };
+          
+          const result = await yahooFinance.historical(symbol, queryOptions);
+          
+          // Extract close prices and dates
+          const prices = result.map(quote => quote.close);
+          const dates = result.map(quote => quote.date.toISOString().split('T')[0]);
+          
+          return {
+            symbol,
+            prices,
+            dates
+          };
+        } catch (error) {
+          console.error(`Error fetching data for ${symbol}:`, error);
+          throw new Error(`Failed to fetch data for ${symbol}`);
+        }
+      })
+    );
 
-    // For now, return mock data
-    // In production, this would use the Yahoo Finance API
-    return generateMockPriceData(symbols, period);
+    return results;
   } catch (error) {
     console.error('Error fetching stock data:', error);
     throw error;
   }
-}
-
-// Mock data generator for development
-function generateMockPriceData(symbols: string[], period: string): StockData[] {
-  const numPoints = period === '1mo' ? 30 : 
-                   period === '3mo' ? 90 :
-                   period === '6mo' ? 180 :
-                   period === '1y' ? 365 :
-                   period === '2y' ? 730 : 1825;
-
-  return symbols.map(symbol => {
-    const isCrypto = symbol.includes('-USD');
-    const basePrice = isCrypto ? Math.random() * 1000 + 100 : Math.random() * 100 + 50;
-    const trend = isCrypto ? Math.random() * 0.002 - 0.001 : Math.random() * 0.001 - 0.0005;
-    const volatility = isCrypto ? Math.random() * 0.05 : Math.random() * 0.02;
-
-    const prices: number[] = [];
-    const dates: string[] = [];
-    let currentPrice = basePrice;
-
-    for (let i = 0; i < numPoints; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() - (numPoints - i));
-      dates.push(date.toISOString().split('T')[0]);
-
-      const randomChange = (Math.random() - 0.5) * volatility;
-      currentPrice = currentPrice * (1 + trend + randomChange);
-      prices.push(Math.max(1, currentPrice));
-    }
-
-    return {
-      symbol,
-      prices,
-      dates
-    };
-  });
 }

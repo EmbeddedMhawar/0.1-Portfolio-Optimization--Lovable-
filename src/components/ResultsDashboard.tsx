@@ -1,5 +1,4 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
 import { TrendingUp, TrendingDown, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
 
 interface OptimizationResults {
@@ -52,12 +51,6 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
       </div>
     );
   }
-
-  const barData = results.weights.map(item => ({
-    name: item.asset,
-    value: item.weight * 100,
-    color: item.color
-  }));
 
   return (
     <div className="space-y-6">
@@ -123,79 +116,33 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
         </div>
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-2 gap-6">
-        {/* Pie Chart */}
-        <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-6 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328]">
-          <h3 className="text-lg font-semibold text-[#2e4328] dark:text-white mb-4">
-            Portfolio Allocation
-          </h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={barData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  label={({ name, value }) => `${name} (${value.toFixed(1)}%)`}
-                >
-                  {barData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`}
-                      fill={entry.color}
-                      className="transition-all duration-300 hover:opacity-80"
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Bar Chart */}
-        <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-6 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328]">
-          <h3 className="text-lg font-semibold text-[#2e4328] dark:text-white mb-4">
-            Asset Weights
-          </h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData} layout="vertical">
-                <XAxis 
-                  type="number" 
-                  domain={[0, 100]} 
-                  unit="%" 
-                  tick={{ fill: '#426039' }}
-                />
-                <YAxis 
-                  type="category" 
-                  dataKey="name" 
-                  width={60}
-                  tick={{ fill: '#426039' }}
-                />
-                <Tooltip
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    backdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: '8px'
-                  }}
-                  formatter={(value: number) => [`${value.toFixed(2)}%`, 'Weight']}
-                />
-                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                  {barData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`}
-                      fill={entry.color}
-                      className="transition-all duration-300 hover:opacity-80"
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+      {/* Asset Weights List */}
+      <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-6 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328]">
+        <h3 className="text-lg font-semibold text-[#2e4328] dark:text-white mb-4">
+          Portfolio Allocation
+        </h3>
+        <div className="space-y-3">
+          {results.weights
+            .sort((a, b) => b.weight - a.weight)
+            .map((item, index) => (
+              <div 
+                key={item.asset}
+                className="flex items-center justify-between p-3 rounded-lg bg-white/5 dark:bg-[#2e4328]/30 border border-[#d4e6d7]/20 dark:border-[#2e4328]/50"
+              >
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="text-[#2e4328] dark:text-white font-medium">
+                    {item.asset}
+                  </span>
+                </div>
+                <span className="text-[#426039] dark:text-[#a2c398] font-medium">
+                  {(item.weight * 100).toFixed(2)}%
+                </span>
+              </div>
+            ))}
         </div>
       </div>
     </div>

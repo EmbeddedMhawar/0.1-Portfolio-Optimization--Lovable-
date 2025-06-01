@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Bell, Sun, Moon } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 export const Header = () => {
@@ -23,32 +23,13 @@ export const Header = () => {
         <h1 className="text-[#343a40] dark:text-white text-lg font-bold">InvestSmart</h1>
       </div>
 
-      <div className="flex items-center gap-8">
-        <nav className="flex gap-9">
-          {['Dashboard', 'Portfolio', 'Optimize', 'Research', 'Learn'].map(item => (
-            <a key={item} href="#" className="text-[#343a40] dark:text-white text-sm font-medium">
-              {item}
-            </a>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-4">
-          <button className="header-button">
-            <Bell className="h-5 w-5" />
-          </button>
-          <button 
-            className="header-button theme-toggle-ripple"
-            onClick={handleThemeToggle}
-            data-theme-changing={isChanging}
-          >
-            {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </button>
-          <div 
-            className="w-10 h-10 rounded-full bg-cover bg-center"
-            style={{ backgroundImage: 'url("https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")' }}
-          />
-        </div>
-      </div>
+      <button 
+        className="header-button theme-toggle-ripple"
+        onClick={handleThemeToggle}
+        data-theme-changing={isChanging}
+      >
+        {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      </button>
     </header>
   );
 };

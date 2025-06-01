@@ -1,10 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Header } from '../components/Header';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
+import { availableStocks } from '../utils/stockApi';
 
 const Index = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('1Y');
   const periods = ['1Y', '3Y', '5Y', '10Y', 'MAX'];
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStocks, setSelectedStocks] = useState<string[]>([]);
+
+  const filteredStocks = availableStocks.filter(stock => 
+    (stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     stock.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    !selectedStocks.includes(stock.symbol)
+  );
+
+  const handleStockSelect = useCallback((symbol: string) => {
+    if (selectedStocks.length < 10) {
+      setSelectedStocks(prev => [...prev, symbol]);
+      setSearchTerm('');
+    }
+  }, [selectedStocks]);
+
+  const handleStockRemove = useCallback((symbol: string) => {
+    setSelectedStocks(prev => prev.filter(s => s !== symbol));
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#f4f7f5] dark:bg-[#162013] transition-colors duration-700">
@@ -20,20 +40,57 @@ const Index = () => {
             </div>
             <input
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search Stocks... 🔎"
               className="search-input w-full h-12 pl-12"
             />
+            {searchTerm && filteredStocks.length > 0 && (
+              <div className="absolute w-full mt-1 bg-white dark:bg-[#21301c] rounded-lg shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] max-h-60 overflow-y-auto">
+                {filteredStocks.map(stock => (
+                  <button
+                    key={stock.symbol}
+                    onClick={() => handleStockSelect(stock.symbol)}
+                    className="w-full px-4 py-3 text-left hover:bg-[#e8f0e9] dark:hover:bg-[#2e4328] text-[#2e4328] dark:text-white transition-colors duration-300"
+                  >
+                    <span className="font-medium">{stock.symbol}</span> - {stock.name}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <button className="stock-chip w-fit mb-6">Upload CSV</button>
 
-          <div className="stock-chip w-fit mb-6">AAPL Apple Inc.</div>
+          {selectedStocks.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {selectedStocks.map(symbol => {
+                const stock = availableStocks.find(s => s.symbol === symbol);
+                return (
+                  <div key={symbol} className="stock-chip flex items-center gap-2">
+                    <span>{symbol} {stock?.name}</span>
+                    <button
+                      onClick={() => handleStockRemove(symbol)}
+                      className="p-1 hover:bg-[#d4e6d7] dark:hover:bg-[#426039] rounded-full transition-colors duration-300"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           <h2 className="text-[#2e4328] dark:text-white text-lg font-bold mb-4">Popular Stocks</h2>
           <div className="flex gap-3 mb-6">
-            {['Tesla', 'Amazon', 'Meta'].map(stock => (
-              <button key={stock} className="stock-chip">
-                {stock}
+            {availableStocks.slice(0, 3).map(stock => (
+              <button
+                key={stock.symbol}
+                className="stock-chip"
+                onClick={() => handleStockSelect(stock.symbol)}
+                disabled={selectedStocks.includes(stock.symbol)}
+              >
+                {stock.symbol}
               </button>
             ))}
           </div>

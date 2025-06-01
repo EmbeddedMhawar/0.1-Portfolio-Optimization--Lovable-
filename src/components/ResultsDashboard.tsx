@@ -7,6 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Switch } from "@/components/ui/switch";
 
 interface OptimizationResults {
   weights: {
@@ -20,7 +21,6 @@ interface OptimizationResults {
     sharpeRatio: number;
   };
   constraintsMet: boolean;
-  isCrypto?: boolean;
 }
 
 interface ResultsDashboardProps {
@@ -30,6 +30,7 @@ interface ResultsDashboardProps {
 
 export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isLoading }) => {
   const [expandedAsset, setExpandedAsset] = useState<string | null>(null);
+  const [isCrypto, setIsCrypto] = useState(false);
 
   if (isLoading) {
     return (
@@ -62,40 +63,43 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
     );
   }
 
-  const getMetricColor = (value: number, isReturn = false, isVolatility = false) => {
-    if (isReturn) {
+  const getExpectedReturnTooltip = (value: number) => {
+    if (isCrypto) {
+      if (value >= 50) return "Extremely high return potential. High risk likely.";
+      if (value >= 20) return "Very high return potential. Consider risk carefully.";
+      if (value >= 10) return "Good return potential for crypto assets.";
       return value >= 0 
-        ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]' 
-        : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
+        ? "Moderate return potential. Below crypto market average." 
+        : "Negative expected return. High risk of losses.";
+    } else {
+      if (value >= 20) return "Exceptionally high return. Verify assumptions.";
+      if (value >= 15) return "Very high return. Consider risk carefully.";
+      if (value >= 10) return "High return potential. Above market average.";
+      if (value >= 5) return "Good return potential. Near market average.";
+      return value >= 0 
+        ? "Moderate return potential." 
+        : "Negative expected return. Consider reallocation.";
     }
+  };
 
-    if (isVolatility) {
-      if (results.isCrypto) {
-        return value <= 3 
-          ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]'
-          : value <= 6
-            ? 'text-amber-500 dark:text-amber-400 [text-shadow:0_0_10px_rgba(245,158,11,0.3)]'
-            : value <= 10
-              ? 'text-orange-500 dark:text-orange-400 [text-shadow:0_0_10px_rgba(249,115,22,0.3)]'
-              : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
-      } else {
-        return value <= 2.5
-          ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]'
-          : value <= 4
-            ? 'text-amber-500 dark:text-amber-400 [text-shadow:0_0_10px_rgba(245,158,11,0.3)]'
-            : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
-      }
+  const getSharpeRatioTooltip = (value: number) => {
+    if (isCrypto) {
+      if (value >= 3) return "Exceptional risk-adjusted returns for crypto.";
+      if (value >= 2) return "Very good risk-adjusted returns for crypto.";
+      if (value >= 1) return "Good risk-adjusted returns for crypto.";
+      if (value >= 0.5) return "Moderate risk-adjusted returns for crypto.";
+      return "Poor risk-adjusted returns. Consider reallocation.";
+    } else {
+      if (value >= 2) return "Exceptional risk-adjusted returns.";
+      if (value >= 1.5) return "Very good risk-adjusted returns.";
+      if (value >= 1) return "Good risk-adjusted returns.";
+      if (value >= 0.5) return "Moderate risk-adjusted returns.";
+      return "Poor risk-adjusted returns. Consider reallocation.";
     }
-
-    return value >= 2 
-      ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]'
-      : value >= 1
-        ? 'text-amber-500 dark:text-amber-400 [text-shadow:0_0_10px_rgba(245,158,11,0.3)]'
-        : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
   };
 
   const getVolatilityTooltip = (volatility: number) => {
-    if (results.isCrypto) {
+    if (isCrypto) {
       if (volatility <= 3) return "Low volatility for crypto assets. Very stable performance.";
       if (volatility <= 6) return "Moderate volatility for crypto assets. Good tradability.";
       if (volatility <= 10) return "High but tradable volatility for crypto assets.";
@@ -104,6 +108,47 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
       if (volatility <= 2.5) return "Low volatility. Very stable performance.";
       if (volatility <= 4) return "Moderate volatility. Still tradable but requires attention.";
       return "High volatility. Increased risk of significant losses.";
+    }
+  };
+
+  const getMetricColor = (value: number, isReturn = false, isVolatility = false) => {
+    if (isReturn) {
+      return value >= 0 
+        ? 'text-emerald-500 dark:text-emerald-400 [text-shadow:0_0_10px_rgba(16,185,129,0.3)]' 
+        : 'text-red-500 dark:text-red-400 [text-shadow:0_0_10px_rgba(239,68,68,0.3)]';
+    }
+
+    if (isVolatility) {
+      if (isCrypto) {
+        return value <= 3 
+          ? 'text-emerald-500 dark:text-emerald-400'
+          : value <= 6
+            ? 'text-amber-500 dark:text-amber-400'
+            : value <= 10
+              ? 'text-orange-500 dark:text-orange-400'
+              : 'text-red-500 dark:text-red-400';
+      } else {
+        return value <= 2.5
+          ? 'text-emerald-500 dark:text-emerald-400'
+          : value <= 4
+            ? 'text-amber-500 dark:text-amber-400'
+            : 'text-red-500 dark:text-red-400';
+      }
+    }
+
+    // Sharpe Ratio colors
+    if (isCrypto) {
+      return value >= 2 
+        ? 'text-emerald-500 dark:text-emerald-400'
+        : value >= 1
+          ? 'text-amber-500 dark:text-amber-400'
+          : 'text-red-500 dark:text-red-400';
+    } else {
+      return value >= 1.5 
+        ? 'text-emerald-500 dark:text-emerald-400'
+        : value >= 1
+          ? 'text-amber-500 dark:text-amber-400'
+          : 'text-red-500 dark:text-red-400';
     }
   };
 
@@ -131,27 +176,42 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
             className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[60]"
           >
             <p className="text-[#2e4328] dark:text-white text-sm">
-              {isVolatility ? getVolatilityTooltip(value) : tooltip}
+              {isVolatility 
+                ? getVolatilityTooltip(value)
+                : isReturn
+                  ? getExpectedReturnTooltip(value)
+                  : getSharpeRatioTooltip(value)}
             </p>
           </TooltipContent>
         </Tooltip>
       </div>
       <div className="flex items-center gap-2">
+        <Icon className={`w-6 h-6 ${getMetricColor(value, isReturn, isVolatility)}`} />
         <p className={`text-2xl font-bold ${getMetricColor(value, isReturn, isVolatility)}`}>
           {format(value)}
         </p>
-        <Icon className={`w-6 h-6 ${getMetricColor(value, isReturn, isVolatility)}`} />
       </div>
     </div>
   );
 
   return (
     <div className="space-y-6">
+      {/* Asset Type Toggle */}
+      <div className="flex items-center justify-end gap-2 text-[#426039] dark:text-[#a2c398]">
+        <span className="text-sm">Traditional Assets</span>
+        <Switch
+          checked={isCrypto}
+          onCheckedChange={setIsCrypto}
+          className="data-[state=checked]:bg-[#426039]"
+        />
+        <span className="text-sm">Crypto Assets</span>
+      </div>
+
       {/* Status Banner */}
       <div className={`p-4 rounded-xl flex items-center space-x-3 ${
         results.constraintsMet 
-          ? 'bg-[#e8f0e9]/50 dark:bg-[#2e4328]/50 border border-[#d4e6d7]/50 dark:border-[#426039]/50 shadow-[0_0_15px_rgba(46,67,40,0.1)]' 
-          : 'bg-[#ffd43b]/10 dark:bg-[#ffd43b]/20 border border-[#ffd43b]/50 shadow-[0_0_15px_rgba(255,212,59,0.1)]'
+          ? 'bg-[#e8f0e9]/50 dark:bg-[#2e4328]/50 border border-[#d4e6d7]/50 dark:border-[#426039]/50' 
+          : 'bg-[#ffd43b]/10 dark:bg-[#ffd43b]/20 border border-[#ffd43b]/50'
       }`}>
         {results.constraintsMet ? (
           <CheckCircle className="w-5 h-5 text-[#2e4328] dark:text-[#a2c398]" />
@@ -176,7 +236,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
           <MetricCard
             label="Expected Return"
             value={results.metrics.expectedReturn * 100}
-            tooltip="The anticipated annual return of the portfolio based on historical data. A positive value (green) indicates expected profits, while negative (red) suggests potential losses."
+            tooltip={getExpectedReturnTooltip(results.metrics.expectedReturn * 100)}
             icon={results.metrics.expectedReturn >= 0 ? TrendingUp : TrendingDown}
             format={(v) => `${v.toFixed(2)}%`}
             isReturn={true}
@@ -185,7 +245,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
           <MetricCard
             label="Volatility"
             value={results.metrics.volatility * 100}
-            tooltip="Measures the portfolio's risk level through price fluctuations."
+            tooltip={getVolatilityTooltip(results.metrics.volatility * 100)}
             icon={TrendingDown}
             format={(v) => `${v.toFixed(2)}%`}
             isVolatility={true}
@@ -194,7 +254,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
           <MetricCard
             label="Sharpe Ratio"
             value={results.metrics.sharpeRatio}
-            tooltip="A measure of risk-adjusted returns. Higher values (green) indicate better returns per unit of risk. Values above 1 are considered good, above 2 excellent."
+            tooltip={getSharpeRatioTooltip(results.metrics.sharpeRatio)}
             icon={Shield}
           />
         </TooltipProvider>

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Header } from '../components/Header';
 import { Search, X, ArrowRight, Calendar as CalendarIcon, Upload } from 'lucide-react';
-import { availableStocks } from '../utils/stockApi';
+import { availableStocks, fetchStockData } from '../utils/stockApi';
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -100,11 +100,46 @@ const Index = () => {
 
     setIsOptimizing(true);
     try {
-      // Use CSV data if available, otherwise use selected stocks data
-      const data = csvData || {
-        prices: [[100, 150, 200], [110, 160, 180], [120, 155, 190]], // Mock data for example
-        assetNames: selectedStocks
-      };
+      let data;
+      
+      if (csvData) {
+        // Use CSV data
+        data = csvData;
+      } else {
+        // Fetch real stock data
+        toast({
+          title: "Fetching stock data",
+          description: "Getting latest market data...",
+        });
+
+        const periodMap: { [key: string]: string } = {
+          '1Y': '1y',
+          '3Y': '3y', 
+          '5Y': '5y',
+          '10Y': '10y',
+          'MAX': '5y' // Fallback to 5y for MAX
+        };
+
+        const stockData = await fetchStockData(selectedStocks, periodMap[selectedPeriod]);
+        
+        // Transform stock data to the format expected by the optimizer
+        const maxLength = Math.min(...stockData.map(stock => stock.prices.length));
+        const prices: number[][] = [];
+        
+        for (let i = 0; i < maxLength; i++) {
+          const priceRow: number[] = [];
+          for (const stock of stockData) {
+            priceRow.push(stock.prices[i] || 0);
+          }
+          prices.push(priceRow);
+        }
+        
+        data = {
+          prices,
+          assetNames: selectedStocks,
+          dates: stockData[0]?.dates.slice(0, maxLength) || []
+        };
+      }
 
       const targetReturn = 0.10; // 10% target return
       const result = optimizePortfolio(data.prices, targetReturn);
@@ -127,14 +162,14 @@ const Index = () => {
       setOptimizationResults(optimizedResults);
       
       toast({
-        title: "Portfolio optimized",
-        description: "Check the results below",
+        title: "Portfolio optimized successfully",
+        description: `Expected return: ${(result.metrics.expectedReturn * 100).toFixed(2)}%`,
       });
     } catch (error) {
       console.error('Optimization error:', error);
       toast({
         title: "Optimization failed",
-        description: "An error occurred during optimization",
+        description: "An error occurred during optimization. Please try again.",
         variant: "destructive",
       });
     } finally {

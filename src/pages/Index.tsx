@@ -133,106 +133,113 @@ const Index = () => {
       <Header />
       
       <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - Input Panel */}
-          <div className="flex flex-col space-y-6">
-            <h1 className="portfolio-text text-[32px] font-bold">Optimize Portfolio</h1>
-
-            {/* CSV Upload Section */}
-            <div className="space-y-4">
-              <h2 className="portfolio-text text-lg font-semibold">Upload Portfolio Data</h2>
-              
-              <div
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onClick={handleCsvButtonClick}
-                className="border-2 border-dashed border-[#d4e6d7] dark:border-[#426039] rounded-xl p-8 text-center cursor-pointer hover:border-[#426039] dark:hover:border-[#a2c398] hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 transition-all duration-300"
-              >
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  accept=".csv"
-                  className="hidden"
-                  onChange={handleFileUpload}
-                />
-
-                {csvData ? (
-                  <div className="space-y-3">
-                    <div className="w-16 h-16 bg-[#e8f0e9] dark:bg-[#2e4328] rounded-full flex items-center justify-center mx-auto">
-                      <Upload className="w-8 h-8 text-[#426039] dark:text-[#a2c398]" />
-                    </div>
-                    <div>
-                      <p className="portfolio-text font-medium text-lg">File uploaded successfully!</p>
-                      <p className="text-[#426039] dark:text-[#a2c398] text-sm mt-1">
-                        {csvData.assetNames.length} assets • {csvData.prices.length} periods
-                      </p>
-                    </div>
-                    <button className="text-[#426039] dark:text-[#a2c398] text-sm hover:underline">
-                      Click to upload a different file
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <div className="w-16 h-16 bg-[#e8f0e9] dark:bg-[#2e4328] rounded-full flex items-center justify-center mx-auto">
-                      <Upload className="w-8 h-8 text-[#426039] dark:text-[#a2c398]" />
-                    </div>
-                    <div>
-                      <p className="portfolio-text font-medium text-lg">Upload CSV File</p>
-                      <p className="text-[#426039] dark:text-[#a2c398] text-sm mt-1">
-                        Drag and drop your portfolio data file here, or click to browse
-                      </p>
-                    </div>
-                    <p className="text-xs text-[#426039] dark:text-[#a2c398]">
-                      Supported format: CSV with asset prices over time
-                    </p>
-                  </div>
-                )}
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {/* Left Column - Input Panel */}
+            <div className="flex flex-col space-y-6 lg:sticky lg:top-8">
+              <div className="text-center lg:text-left">
+                <h1 className="portfolio-text text-[32px] font-bold">Optimize Portfolio</h1>
+                <p className="text-[#426039] dark:text-[#a2c398] mt-2">
+                  Upload your portfolio data and get optimal asset allocation
+                </p>
               </div>
 
-              {/* CSV Format Help */}
-              <div className="bg-[#e8f0e9] dark:bg-[#2e4328] rounded-lg p-4">
-                <h3 className="portfolio-text font-medium mb-2">Expected CSV Format:</h3>
-                <div className="text-sm text-[#426039] dark:text-[#a2c398] space-y-1">
-                  <p>• First column: Date (YYYY-MM-DD)</p>
-                  <p>• Subsequent columns: Asset prices</p>
-                  <p>• Header row with asset names</p>
-                  <p>• Example: Date, AAPL, MSFT, GOOGL</p>
+              {/* CSV Upload Section */}
+              <div className="space-y-4">
+                <h2 className="portfolio-text text-lg font-semibold">Upload Portfolio Data</h2>
+                
+                <div
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                  onClick={handleCsvButtonClick}
+                  className="border-2 border-dashed border-[#d4e6d7] dark:border-[#426039] rounded-xl p-8 text-center cursor-pointer hover:border-[#426039] dark:hover:border-[#a2c398] hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 transition-all duration-300"
+                >
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept=".csv"
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+
+                  {csvData ? (
+                    <div className="space-y-3">
+                      <div className="w-16 h-16 bg-[#e8f0e9] dark:bg-[#2e4328] rounded-full flex items-center justify-center mx-auto">
+                        <Upload className="w-8 h-8 text-[#426039] dark:text-[#a2c398]" />
+                      </div>
+                      <div>
+                        <p className="portfolio-text font-medium text-lg">File uploaded successfully!</p>
+                        <p className="text-[#426039] dark:text-[#a2c398] text-sm mt-1">
+                          {csvData.assetNames.length} assets • {csvData.prices.length} periods
+                        </p>
+                      </div>
+                      <button className="text-[#426039] dark:text-[#a2c398] text-sm hover:underline">
+                        Click to upload a different file
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="w-16 h-16 bg-[#e8f0e9] dark:bg-[#2e4328] rounded-full flex items-center justify-center mx-auto">
+                        <Upload className="w-8 h-8 text-[#426039] dark:text-[#a2c398]" />
+                      </div>
+                      <div>
+                        <p className="portfolio-text font-medium text-lg">Upload CSV File</p>
+                        <p className="text-[#426039] dark:text-[#a2c398] text-sm mt-1">
+                          Drag and drop your portfolio data file here, or click to browse
+                        </p>
+                      </div>
+                      <p className="text-xs text-[#426039] dark:text-[#a2c398]">
+                        Supported format: CSV with asset prices over time
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* CSV Format Help */}
+                <div className="bg-[#e8f0e9] dark:bg-[#2e4328] rounded-lg p-4">
+                  <h3 className="portfolio-text font-medium mb-2">Expected CSV Format:</h3>
+                  <div className="text-sm text-[#426039] dark:text-[#a2c398] space-y-1">
+                    <p>• First column: Date (YYYY-MM-DD)</p>
+                    <p>• Subsequent columns: Asset prices</p>
+                    <p>• Header row with asset names</p>
+                    <p>• Example: Date, AAPL, MSFT, GOOGL</p>
+                  </div>
                 </div>
               </div>
+
+              {/* Optimize Button */}
+              <button
+                onClick={handleOptimize}
+                disabled={!csvData || isOptimizing}
+                className="flex items-center justify-center gap-2 w-full bg-[#2e4328] hover:bg-[#426039] disabled:bg-[#e8f0e9] dark:disabled:bg-[#2e4328] text-white disabled:text-[#426039] dark:disabled:text-[#a2c398] rounded-lg py-4 font-medium transition-colors duration-300 disabled:cursor-not-allowed"
+              >
+                {isOptimizing ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Optimizing Portfolio...
+                  </>
+                ) : (
+                  <>
+                    Optimize Portfolio
+                    <ArrowRight className="h-5 w-5" />
+                  </>
+                )}
+              </button>
+
+              {!csvData && (
+                <div className="text-center text-[#426039] dark:text-[#a2c398] text-sm">
+                  Upload your portfolio data to get started with optimization
+                </div>
+              )}
             </div>
 
-            {/* Optimize Button */}
-            <button
-              onClick={handleOptimize}
-              disabled={!csvData || isOptimizing}
-              className="flex items-center justify-center gap-2 w-full bg-[#2e4328] hover:bg-[#426039] disabled:bg-[#e8f0e9] dark:disabled:bg-[#2e4328] text-white disabled:text-[#426039] dark:disabled:text-[#a2c398] rounded-lg py-4 font-medium transition-colors duration-300 disabled:cursor-not-allowed"
-            >
-              {isOptimizing ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Optimizing Portfolio...
-                </>
-              ) : (
-                <>
-                  Optimize Portfolio
-                  <ArrowRight className="h-5 w-5" />
-                </>
-              )}
-            </button>
-
-            {!csvData && (
-              <div className="text-center text-[#426039] dark:text-[#a2c398] text-sm">
-                Upload your portfolio data to get started with optimization
-              </div>
-            )}
-          </div>
-
-          {/* Right Column - Results Dashboard */}
-          <div>
-            <ResultsDashboard 
-              results={optimizationResults}
-              isLoading={isOptimizing}
-            />
+            {/* Right Column - Results Dashboard */}
+            <div className="lg:sticky lg:top-8">
+              <ResultsDashboard 
+                results={optimizationResults}
+                isLoading={isOptimizing}
+              />
+            </div>
           </div>
         </div>
       </div>

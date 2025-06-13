@@ -11,50 +11,63 @@ export default {
   theme: {
     extend: {
       colors: {
-        border: {
-          DEFAULT: '#d4e6d7',
-          dark: '#2e4328'
-        },
-        input: {
-          DEFAULT: '#e8f0e9',
-          dark: '#2e4328'
-        },
-        ring: {
-          DEFAULT: '#426039',
-          dark: '#426039'
-        },
-        background: {
-          DEFAULT: '#f4f7f5',
-          dark: '#162013'
-        },
-        foreground: {
-          DEFAULT: '#2e4328',
-          dark: '#ffffff'
-        },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: '#2e4328',
-          foreground: '#ffffff'
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: '#e8f0e9',
-          dark: '#21301c',
-          foreground: '#2e4328'
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: '#e8f0e9',
-          dark: '#21301c',
-          foreground: '#426039'
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: '#e8f0e9',
-          dark: '#21301c',
-          foreground: '#2e4328'
-        }
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif']
-      }
-    }
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
+    },
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;

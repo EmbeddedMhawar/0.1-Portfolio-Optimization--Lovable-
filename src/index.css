@@ -4,13 +4,48 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 102 26% 7%;
+    --background: 244 247 245;
+    --foreground: 46 67 40;
+    --card: 255 255 255;
+    --card-foreground: 46 67 40;
+    --popover: 255 255 255;
+    --popover-foreground: 46 67 40;
+    --primary: 46 67 40;
+    --primary-foreground: 255 255 255;
+    --secondary: 232 240 233;
+    --secondary-foreground: 46 67 40;
+    --muted: 232 240 233;
+    --muted-foreground: 66 96 57;
+    --accent: 232 240 233;
+    --accent-foreground: 46 67 40;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+    --border: 212 230 215;
+    --input: 232 240 233;
+    --ring: 66 96 57;
+    --radius: 0.5rem;
   }
 
   .dark {
-    --background: 102 26% 7%;
-    --foreground: 210 40% 98%;
+    --background: 22 48 19;
+    --foreground: 255 255 255;
+    --card: 33 48 28;
+    --card-foreground: 255 255 255;
+    --popover: 33 48 28;
+    --popover-foreground: 255 255 255;
+    --primary: 66 96 57;
+    --primary-foreground: 255 255 255;
+    --secondary: 46 67 40;
+    --secondary-foreground: 255 255 255;
+    --muted: 46 67 40;
+    --muted-foreground: 162 195 152;
+    --accent: 46 67 40;
+    --accent-foreground: 255 255 255;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+    --border: 46 67 40;
+    --input: 46 67 40;
+    --ring: 66 96 57;
   }
 }
 
@@ -21,7 +56,7 @@
   
   body {
     font-family: 'Inter', sans-serif;
-    @apply bg-[#f4f7f5] dark:bg-[#162013] text-foreground transition-colors duration-700;
+    @apply bg-background text-foreground transition-colors duration-700;
   }
 
   .theme-toggle-ripple {

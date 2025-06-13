@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TrendingUp, TrendingDown, Shield, AlertTriangle, CheckCircle, ChevronDown, Info } from 'lucide-react';
-import { availableStocks } from '../utils/stockApi';
 import {
   Tooltip,
   TooltipContent,
@@ -57,7 +56,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
             <TrendingUp className="w-8 h-8" />
           </div>
           <h3 className="text-lg font-medium mb-2 portfolio-text">Ready to Optimize</h3>
-          <p className="text-sm">Select your assets and click optimize to see the results.</p>
+          <p className="text-sm">Upload your portfolio data and click optimize to see the results.</p>
         </div>
       </div>
     );
@@ -274,7 +273,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
               </TooltipTrigger>
               <TooltipContent className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3">
                 <p className="portfolio-text text-sm">
-                  Click on a stock to see detailed information
+                  Click on an asset to see detailed information
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -285,67 +284,58 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
         <div className="space-y-2">
           {results.weights
             .sort((a, b) => b.weight - a.weight)
-            .map((item) => {
-              const stockInfo = availableStocks.find(s => s.symbol === item.asset);
-              return (
-                <div key={item.asset} className="group">
-                  <button
-                    onClick={() => setExpandedAsset(expandedAsset === item.asset ? null : item.asset)}
-                    className="portfolio-asset w-full flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-2 h-2 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]"
-                        style={{ backgroundColor: item.color }}
-                      />
-                      <span className="portfolio-text font-medium">
-                        {item.asset}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#426039] dark:text-[#a2c398] font-medium">
-                        {(item.weight * 100).toFixed(2)}%
-                      </span>
-                      <ChevronDown 
-                        className={`w-4 h-4 text-[#426039] dark:text-[#a2c398] transition-transform duration-300 ${
-                          expandedAsset === item.asset ? 'rotate-180' : ''
-                        }`}
-                      />
-                    </div>
-                  </button>
-                  {expandedAsset === item.asset && (
-                    <div className="mt-2 p-4 rounded-lg bg-white/5 dark:bg-[#2e4328]/30 border border-[#d4e6d7]/20 dark:border-[#2e4328]/50">
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="text-[#426039] dark:text-[#a2c398]">Company Name</p>
-                          <p className="portfolio-text font-medium">
-                            {stockInfo?.name || item.asset}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-[#426039] dark:text-[#a2c398]">Exchange</p>
-                          <p className="portfolio-text font-medium">
-                            {stockInfo?.exchange || 'N/A'}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-[#426039] dark:text-[#a2c398]">Weight</p>
-                          <p className="portfolio-text font-medium">
-                            {(item.weight * 100).toFixed(2)}%
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-[#426039] dark:text-[#a2c398]">Return Contribution</p>
-                          <p className={`font-medium ${getMetricColor(item.weight * results.metrics.expectedReturn, true)}`}>
-                            {(item.weight * results.metrics.expectedReturn * 100).toFixed(2)}%
-                          </p>
-                        </div>
+            .map((item) => (
+              <div key={item.asset} className="group">
+                <button
+                  onClick={() => setExpandedAsset(expandedAsset === item.asset ? null : item.asset)}
+                  className="portfolio-asset w-full flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="w-2 h-2 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="portfolio-text font-medium">
+                      {item.asset}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[#426039] dark:text-[#a2c398] font-medium">
+                      {(item.weight * 100).toFixed(2)}%
+                    </span>
+                    <ChevronDown 
+                      className={`w-4 h-4 text-[#426039] dark:text-[#a2c398] transition-transform duration-300 ${
+                        expandedAsset === item.asset ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </div>
+                </button>
+                {expandedAsset === item.asset && (
+                  <div className="mt-2 p-4 rounded-lg bg-white/5 dark:bg-[#2e4328]/30 border border-[#d4e6d7]/20 dark:border-[#2e4328]/50">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-[#426039] dark:text-[#a2c398]">Asset Name</p>
+                        <p className="portfolio-text font-medium">
+                          {item.asset}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-[#426039] dark:text-[#a2c398]">Weight</p>
+                        <p className="portfolio-text font-medium">
+                          {(item.weight * 100).toFixed(2)}%
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-[#426039] dark:text-[#a2c398]">Return Contribution</p>
+                        <p className={`font-medium ${getMetricColor(item.weight * results.metrics.expectedReturn, true)}`}>
+                          {(item.weight * results.metrics.expectedReturn * 100).toFixed(2)}%
+                        </p>
                       </div>
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                  </div>
+                )}
+              </div>
+            ))}
         </div>
       </div>
     </div>

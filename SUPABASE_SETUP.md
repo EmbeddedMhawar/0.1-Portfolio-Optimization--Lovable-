@@ -55,8 +55,7 @@ supabase functions deploy fetch-stocks
 Create a `.env.local` file in your project root:
 
 ```env
-VITE_SUPABASE_URL=https://your-project-ref.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
+
 ```
 
 ## Step 7: Test the Setup

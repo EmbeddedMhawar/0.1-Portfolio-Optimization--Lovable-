@@ -1,54 +1,17 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Header } from '../components/Header';
-import { Search, X, ArrowRight, Calendar as CalendarIcon, Upload } from 'lucide-react';
-import { availableStocks, fetchStockData } from '../utils/stockApi';
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Upload, ArrowRight } from 'lucide-react';
 import { parseCSV } from '../utils/csvParser';
 import { useToast } from "@/hooks/use-toast";
 import { ResultsDashboard } from '../components/ResultsDashboard';
 import { optimizePortfolio } from '../utils/portfolioOptimizer';
 
 const Index = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('1Y');
-  const periods = ['1Y', '3Y', '5Y', '10Y', 'MAX'];
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStocks, setSelectedStocks] = useState<string[]>([]);
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
   const [csvData, setCsvData] = useState<any>(null);
   const [optimizationResults, setOptimizationResults] = useState<any>(null);
   const [isOptimizing, setIsOptimizing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-
-  const filteredStocks = availableStocks.filter(stock => 
-    (stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     stock.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    !selectedStocks.includes(stock.symbol)
-  );
-
-  const popularCryptos = availableStocks.filter(stock => 
-    stock.type === 'crypto'
-  ).slice(0, 3);
-
-  const popularStocks = availableStocks.filter(stock => 
-    stock.type === 'stock'
-  ).slice(0, 3);
-
-  const handleStockSelect = useCallback((symbol: string) => {
-    if (selectedStocks.length < 10) {
-      setSelectedStocks(prev => [...prev, symbol]);
-      setSearchTerm('');
-    }
-  }, [selectedStocks]);
-
-  const handleStockRemove = useCallback((symbol: string) => {
-    setSelectedStocks(prev => prev.filter(s => s !== symbol));
-  }, []);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -70,7 +33,7 @@ const Index = () => {
         const parsed = parseCSV(csvContent);
         
         setCsvData(parsed);
-        setSelectedStocks([]); // Clear manually selected stocks
+        setOptimizationResults(null); // Clear previous results
         
         toast({
           title: "CSV uploaded successfully",
@@ -89,10 +52,10 @@ const Index = () => {
   };
 
   const handleOptimize = async () => {
-    if (!csvData && selectedStocks.length === 0) {
+    if (!csvData) {
       toast({
-        title: "No data selected",
-        description: "Please select stocks or upload a CSV file",
+        title: "No data uploaded",
+        description: "Please upload a CSV file first",
         variant: "destructive",
       });
       return;
@@ -100,54 +63,13 @@ const Index = () => {
 
     setIsOptimizing(true);
     try {
-      let data;
-      
-      if (csvData) {
-        // Use CSV data
-        data = csvData;
-      } else {
-        // Fetch real stock data
-        toast({
-          title: "Fetching stock data",
-          description: "Getting latest market data...",
-        });
-
-        const periodMap: { [key: string]: string } = {
-          '1Y': '1y',
-          '3Y': '3y', 
-          '5Y': '5y',
-          '10Y': '10y',
-          'MAX': '5y' // Fallback to 5y for MAX
-        };
-
-        const stockData = await fetchStockData(selectedStocks, periodMap[selectedPeriod]);
-        
-        // Transform stock data to the format expected by the optimizer
-        const maxLength = Math.min(...stockData.map(stock => stock.prices.length));
-        const prices: number[][] = [];
-        
-        for (let i = 0; i < maxLength; i++) {
-          const priceRow: number[] = [];
-          for (const stock of stockData) {
-            priceRow.push(stock.prices[i] || 0);
-          }
-          prices.push(priceRow);
-        }
-        
-        data = {
-          prices,
-          assetNames: selectedStocks,
-          dates: stockData[0]?.dates.slice(0, maxLength) || []
-        };
-      }
-
       const targetReturn = 0.10; // 10% target return
-      const result = optimizePortfolio(data.prices, targetReturn);
+      const result = optimizePortfolio(csvData.prices, targetReturn);
 
       // Transform the results into the expected format
       const optimizedResults = {
         weights: result.weights.map((weight, index) => ({
-          asset: data.assetNames[index],
+          asset: csvData.assetNames[index],
           weight: weight,
           color: `hsl(${(index * 360) / result.weights.length}, 70%, 60%)`
         })),
@@ -181,6 +103,31 @@ const Index = () => {
     fileInputRef.current?.click();
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.name.endsWith('.csv')) {
+        const event = { target: { files: [file] } } as any;
+        handleFileUpload(event);
+      } else {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload a CSV file",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f4f7f5] dark:bg-[#162013] transition-colors duration-700">
       <Header />
@@ -191,188 +138,79 @@ const Index = () => {
           <div className="flex flex-col space-y-6">
             <h1 className="portfolio-text text-[32px] font-bold">Optimize Portfolio</h1>
 
-            <div className="relative">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-[#426039] dark:text-[#a2c398]" />
-              </div>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search Stocks... 🔎"
-                className="search-input w-full h-12 pl-12"
-                disabled={!!csvData}
-              />
-              {searchTerm && filteredStocks.length > 0 && (
-                <div className="absolute w-full mt-1 bg-white dark:bg-[#21301c] rounded-lg shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] max-h-60 overflow-y-auto z-10">
-                  {filteredStocks.map(stock => (
-                    <button
-                      key={stock.symbol}
-                      onClick={() => handleStockSelect(stock.symbol)}
-                      className="w-full px-4 py-3 text-left hover:bg-[#e8f0e9] dark:hover:bg-[#2e4328] portfolio-text transition-colors duration-300"
-                    >
-                      <span className="font-medium">{stock.symbol}</span> - {stock.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept=".csv"
-                className="hidden"
-                onChange={handleFileUpload}
-              />
-              <button 
+            {/* CSV Upload Section */}
+            <div className="space-y-4">
+              <h2 className="portfolio-text text-lg font-semibold">Upload Portfolio Data</h2>
+              
+              <div
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
                 onClick={handleCsvButtonClick}
-                className="stock-chip w-fit flex items-center gap-2"
+                className="border-2 border-dashed border-[#d4e6d7] dark:border-[#426039] rounded-xl p-8 text-center cursor-pointer hover:border-[#426039] dark:hover:border-[#a2c398] hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 transition-all duration-300"
               >
-                <Upload className="h-4 w-4" />
-                {csvData ? 'Change CSV' : 'Upload CSV'}
-              </button>
-              {csvData && (
-                <div className="mt-2 text-sm text-[#426039] dark:text-[#a2c398]">
-                  {csvData.assetNames.length} assets loaded • {csvData.prices.length} periods
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept=".csv"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                />
+
+                {csvData ? (
+                  <div className="space-y-3">
+                    <div className="w-16 h-16 bg-[#e8f0e9] dark:bg-[#2e4328] rounded-full flex items-center justify-center mx-auto">
+                      <Upload className="w-8 h-8 text-[#426039] dark:text-[#a2c398]" />
+                    </div>
+                    <div>
+                      <p className="portfolio-text font-medium text-lg">File uploaded successfully!</p>
+                      <p className="text-[#426039] dark:text-[#a2c398] text-sm mt-1">
+                        {csvData.assetNames.length} assets • {csvData.prices.length} periods
+                      </p>
+                    </div>
+                    <button className="text-[#426039] dark:text-[#a2c398] text-sm hover:underline">
+                      Click to upload a different file
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="w-16 h-16 bg-[#e8f0e9] dark:bg-[#2e4328] rounded-full flex items-center justify-center mx-auto">
+                      <Upload className="w-8 h-8 text-[#426039] dark:text-[#a2c398]" />
+                    </div>
+                    <div>
+                      <p className="portfolio-text font-medium text-lg">Upload CSV File</p>
+                      <p className="text-[#426039] dark:text-[#a2c398] text-sm mt-1">
+                        Drag and drop your portfolio data file here, or click to browse
+                      </p>
+                    </div>
+                    <p className="text-xs text-[#426039] dark:text-[#a2c398]">
+                      Supported format: CSV with asset prices over time
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* CSV Format Help */}
+              <div className="bg-[#e8f0e9] dark:bg-[#2e4328] rounded-lg p-4">
+                <h3 className="portfolio-text font-medium mb-2">Expected CSV Format:</h3>
+                <div className="text-sm text-[#426039] dark:text-[#a2c398] space-y-1">
+                  <p>• First column: Date (YYYY-MM-DD)</p>
+                  <p>• Subsequent columns: Asset prices</p>
+                  <p>• Header row with asset names</p>
+                  <p>• Example: Date, AAPL, MSFT, GOOGL</p>
                 </div>
-              )}
+              </div>
             </div>
 
-            {selectedStocks.length > 0 && !csvData && (
-              <div className="flex flex-wrap gap-2">
-                {selectedStocks.map(symbol => {
-                  const stock = availableStocks.find(s => s.symbol === symbol);
-                  return (
-                    <div key={symbol} className="stock-chip flex items-center gap-2">
-                      <span>{symbol}</span>
-                      <button
-                        onClick={() => handleStockRemove(symbol)}
-                        className="p-1 hover:bg-[#d4e6d7] dark:hover:bg-[#426039] rounded-full transition-colors duration-300"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {!csvData && (
-              <>
-                <div>
-                  <h2 className="portfolio-text text-lg font-bold mb-4">Popular Stocks</h2>
-                  <div className="flex gap-3">
-                    {popularStocks.map(stock => (
-                      <button
-                        key={stock.symbol}
-                        className="stock-chip"
-                        onClick={() => handleStockSelect(stock.symbol)}
-                        disabled={selectedStocks.includes(stock.symbol)}
-                      >
-                        {stock.symbol}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h2 className="portfolio-text text-lg font-bold mb-4">Popular Cryptocurrencies</h2>
-                  <div className="flex gap-3">
-                    {popularCryptos.map(crypto => (
-                      <button
-                        key={crypto.symbol}
-                        className="stock-chip"
-                        onClick={() => handleStockSelect(crypto.symbol)}
-                        disabled={selectedStocks.includes(crypto.symbol)}
-                      >
-                        {crypto.symbol.replace('-USD', '')}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h2 className="portfolio-text text-lg font-bold mb-4">Time Period</h2>
-                  <div className="flex bg-[#e8f0e9] dark:bg-[#2e4328] rounded-lg p-1">
-                    {periods.map(period => (
-                      <button
-                        key={period}
-                        className="time-period-button flex-1"
-                        data-active={selectedPeriod === period}
-                        onClick={() => setSelectedPeriod(period)}
-                      >
-                        {period}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="portfolio-text font-medium mb-2 block">Start Date</label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "date-input w-full h-14 justify-start text-left font-normal",
-                            !startDate && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0 bg-white dark:bg-[#21301c]">
-                        <Calendar
-                          mode="single"
-                          selected={startDate}
-                          onSelect={setStartDate}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <div>
-                    <label className="portfolio-text font-medium mb-2 block">End Date</label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "date-input w-full h-14 justify-start text-left font-normal",
-                            !endDate && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0 bg-white dark:bg-[#21301c]">
-                        <Calendar
-                          mode="single"
-                          selected={endDate}
-                          onSelect={setEndDate}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                </div>
-              </>
-            )}
-
+            {/* Optimize Button */}
             <button
               onClick={handleOptimize}
-              disabled={(!csvData && selectedStocks.length === 0) || isOptimizing}
-              className="flex items-center justify-center gap-2 w-full bg-[#2e4328] hover:bg-[#426039] disabled:bg-[#e8f0e9] dark:disabled:bg-[#2e4328] text-white disabled:text-[#426039] dark:disabled:text-[#a2c398] rounded-lg py-4 font-medium transition-colors duration-300"
+              disabled={!csvData || isOptimizing}
+              className="flex items-center justify-center gap-2 w-full bg-[#2e4328] hover:bg-[#426039] disabled:bg-[#e8f0e9] dark:disabled:bg-[#2e4328] text-white disabled:text-[#426039] dark:disabled:text-[#a2c398] rounded-lg py-4 font-medium transition-colors duration-300 disabled:cursor-not-allowed"
             >
               {isOptimizing ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Optimizing...
+                  Optimizing Portfolio...
                 </>
               ) : (
                 <>
@@ -381,6 +219,12 @@ const Index = () => {
                 </>
               )}
             </button>
+
+            {!csvData && (
+              <div className="text-center text-[#426039] dark:text-[#a2c398] text-sm">
+                Upload your portfolio data to get started with optimization
+              </div>
+            )}
           </div>
 
           {/* Right Column - Results Dashboard */}

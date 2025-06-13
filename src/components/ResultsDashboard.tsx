@@ -33,11 +33,11 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
 
   if (isLoading) {
     return (
-      <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#d4e6d7] dark:border-[#2e4328]">
+      <div className="portfolio-card p-8">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#426039] dark:border-[#a2c398] border-t-[#2e4328] dark:border-t-[#426039] rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <h3 className="text-lg font-semibold portfolio-text mb-2">Optimizing Portfolio...</h3>
-          <div className="space-y-2 text-sm text-[#426039] dark:text-[#a2c398]">
+          <div className="space-y-2 text-sm text-muted-foreground">
             <p>• Calculating covariance matrix...</p>
             <p>• Formulating constraints...</p>
             <p>• Solving optimization problem...</p>
@@ -50,10 +50,10 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
 
   if (!results) {
     return (
-      <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#d4e6d7] dark:border-[#2e4328]">
-        <div className="text-center text-[#426039] dark:text-[#a2c398]">
-          <div className="w-16 h-16 bg-[#e8f0e9] dark:bg-[#2e4328] rounded-full flex items-center justify-center mx-auto mb-4">
-            <TrendingUp className="w-8 h-8" />
+      <div className="portfolio-card p-8">
+        <div className="text-center text-muted-foreground">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <TrendingUp className="w-8 h-8 text-primary" />
           </div>
           <h3 className="text-lg font-medium mb-2 portfolio-text">Ready to Optimize</h3>
           <p className="text-sm">Upload your portfolio data and click optimize to see the results.</p>
@@ -111,45 +111,32 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
   };
 
   const getMetricColor = (value: number, isReturn = false, isVolatility = false) => {
-    const neonEffect = 'dark:[text-shadow:0_0_10px_rgba(var(--neon-color),0.3)]';
-    
     if (isReturn) {
-      return value >= 0 
-        ? `text-emerald-500 dark:text-emerald-400 ${neonEffect}`.replace('var(--neon-color)', '16,185,129')
-        : `text-red-500 dark:text-red-400 ${neonEffect}`.replace('var(--neon-color)', '239,68,68');
+      return value >= 0 ? 'text-emerald-600' : 'text-red-600';
     }
 
     if (isVolatility) {
       if (isCrypto) {
-        if (value <= 3) 
-          return `text-emerald-500 dark:text-emerald-400 ${neonEffect}`.replace('var(--neon-color)', '16,185,129');
-        if (value <= 6)
-          return `text-amber-500 dark:text-amber-400 ${neonEffect}`.replace('var(--neon-color)', '245,158,11');
-        if (value <= 10)
-          return `text-orange-500 dark:text-orange-400 ${neonEffect}`.replace('var(--neon-color)', '249,115,22');
-        return `text-red-500 dark:text-red-400 ${neonEffect}`.replace('var(--neon-color)', '239,68,68');
+        if (value <= 3) return 'text-emerald-600';
+        if (value <= 6) return 'text-amber-600';
+        if (value <= 10) return 'text-orange-600';
+        return 'text-red-600';
       } else {
-        if (value <= 2.5)
-          return `text-emerald-500 dark:text-emerald-400 ${neonEffect}`.replace('var(--neon-color)', '16,185,129');
-        if (value <= 4)
-          return `text-amber-500 dark:text-amber-400 ${neonEffect}`.replace('var(--neon-color)', '245,158,11');
-        return `text-red-500 dark:text-red-400 ${neonEffect}`.replace('var(--neon-color)', '239,68,68');
+        if (value <= 2.5) return 'text-emerald-600';
+        if (value <= 4) return 'text-amber-600';
+        return 'text-red-600';
       }
     }
 
     // Sharpe Ratio colors
     if (isCrypto) {
-      if (value >= 2)
-        return `text-emerald-500 dark:text-emerald-400 ${neonEffect}`.replace('var(--neon-color)', '16,185,129');
-      if (value >= 1)
-        return `text-amber-500 dark:text-amber-400 ${neonEffect}`.replace('var(--neon-color)', '245,158,11');
-      return `text-red-500 dark:text-red-400 ${neonEffect}`.replace('var(--neon-color)', '239,68,68');
+      if (value >= 2) return 'text-emerald-600';
+      if (value >= 1) return 'text-amber-600';
+      return 'text-red-600';
     } else {
-      if (value >= 1.5)
-        return `text-emerald-500 dark:text-emerald-400 ${neonEffect}`.replace('var(--neon-color)', '16,185,129');
-      if (value >= 1)
-        return `text-amber-500 dark:text-amber-400 ${neonEffect}`.replace('var(--neon-color)', '245,158,11');
-      return `text-red-500 dark:text-red-400 ${neonEffect}`.replace('var(--neon-color)', '239,68,68');
+      if (value >= 1.5) return 'text-emerald-600';
+      if (value >= 1) return 'text-amber-600';
+      return 'text-red-600';
     }
   };
 
@@ -162,20 +149,20 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
     isReturn = false,
     isVolatility = false
   }) => (
-    <div className="relative bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-4 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328] hover:shadow-[0_0_20px_rgba(46,67,40,0.15)] transition-shadow duration-300">
+    <div className="portfolio-card p-4 hover:shadow-md transition-shadow duration-200">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <p className="text-sm text-[#426039] dark:text-[#a2c398]">{label}</p>
+          <p className="text-sm text-muted-foreground">{label}</p>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button className="hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 rounded-full p-1 transition-colors">
-                <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
+              <button className="hover:bg-accent rounded-full p-1 transition-colors">
+                <Info className="w-4 h-4 text-muted-foreground" />
               </button>
             </TooltipTrigger>
             <TooltipContent 
               side="top" 
               align="center" 
-              className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3 max-w-xs z-[60]"
+              className="bg-popover border border-border p-3 max-w-xs z-[60]"
             >
               <p className="portfolio-text text-sm">
                 {isVolatility 
@@ -188,12 +175,12 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
           </Tooltip>
         </div>
         {isVolatility && (
-          <div className="flex items-center gap-2 text-[#426039] dark:text-[#a2c398] text-xs">
+          <div className="flex items-center gap-2 text-muted-foreground text-xs">
             <span>Crypto</span>
             <Switch
               checked={isCrypto}
               onCheckedChange={setIsCrypto}
-              className="data-[state=checked]:bg-[#426039] h-4 w-7"
+              className="data-[state=checked]:bg-primary h-4 w-7"
             />
           </div>
         )}
@@ -212,18 +199,18 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
       {/* Status Banner */}
       <div className={`p-4 rounded-xl flex items-center space-x-3 ${
         results.constraintsMet 
-          ? 'bg-[#e8f0e9]/50 dark:bg-[#2e4328]/50 border border-[#d4e6d7]/50 dark:border-[#426039]/50' 
-          : 'bg-[#ffd43b]/10 dark:bg-[#ffd43b]/20 border border-[#ffd43b]/50'
+          ? 'bg-emerald-50 border border-emerald-200 dark:bg-emerald-950 dark:border-emerald-800' 
+          : 'bg-amber-50 border border-amber-200 dark:bg-amber-950 dark:border-amber-800'
       }`}>
         {results.constraintsMet ? (
-          <CheckCircle className="w-5 h-5 text-[#2e4328] dark:text-[#a2c398]" />
+          <CheckCircle className="w-5 h-5 text-emerald-600" />
         ) : (
-          <AlertTriangle className="w-5 h-5 text-[#ffd43b]" />
+          <AlertTriangle className="w-5 h-5 text-amber-600" />
         )}
         <span className={`font-medium ${
           results.constraintsMet 
-            ? 'text-[#2e4328] dark:text-[#a2c398]' 
-            : 'text-[#ffd43b]'
+            ? 'text-emerald-800 dark:text-emerald-200' 
+            : 'text-amber-800 dark:text-amber-200'
         }`}>
           {results.constraintsMet 
             ? 'Optimal portfolio found' 
@@ -263,15 +250,15 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
       </div>
 
       {/* Portfolio Allocation */}
-      <div className="bg-white/10 dark:bg-[#21301c] backdrop-blur-sm rounded-xl p-6 shadow-lg border border-[#d4e6d7] dark:border-[#2e4328]">
+      <div className="portfolio-card p-6">
         <h3 className="text-lg font-semibold portfolio-text mb-6 flex items-center gap-2">
           Portfolio Allocation
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Info className="w-4 h-4 text-[#426039] dark:text-[#a2c398]" />
+                <Info className="w-4 h-4 text-muted-foreground" />
               </TooltipTrigger>
-              <TooltipContent className="bg-white dark:bg-[#2e4328] border border-[#d4e6d7] dark:border-[#426039] p-3">
+              <TooltipContent className="bg-popover border border-border p-3">
                 <p className="portfolio-text text-sm">
                   Click on an asset to see detailed information
                 </p>
@@ -288,11 +275,11 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
               <div key={item.asset} className="group">
                 <button
                   onClick={() => setExpandedAsset(expandedAsset === item.asset ? null : item.asset)}
-                  className="portfolio-asset w-full flex items-center justify-between"
+                  className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-accent transition-colors duration-200"
                 >
                   <div className="flex items-center gap-3">
                     <div 
-                      className="w-2 h-2 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]"
+                      className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: item.color }}
                     />
                     <span className="portfolio-text font-medium">
@@ -300,33 +287,33 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ results, isL
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-[#426039] dark:text-[#a2c398] font-medium">
+                    <span className="text-primary font-medium">
                       {(item.weight * 100).toFixed(2)}%
                     </span>
                     <ChevronDown 
-                      className={`w-4 h-4 text-[#426039] dark:text-[#a2c398] transition-transform duration-300 ${
+                      className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${
                         expandedAsset === item.asset ? 'rotate-180' : ''
                       }`}
                     />
                   </div>
                 </button>
                 {expandedAsset === item.asset && (
-                  <div className="mt-2 p-4 rounded-lg bg-white/5 dark:bg-[#2e4328]/30 border border-[#d4e6d7]/20 dark:border-[#2e4328]/50">
+                  <div className="mt-2 p-4 rounded-lg bg-accent/50 border border-border">
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className="text-[#426039] dark:text-[#a2c398]">Asset Name</p>
+                        <p className="text-muted-foreground">Asset Name</p>
                         <p className="portfolio-text font-medium">
                           {item.asset}
                         </p>
                       </div>
                       <div>
-                        <p className="text-[#426039] dark:text-[#a2c398]">Weight</p>
+                        <p className="text-muted-foreground">Weight</p>
                         <p className="portfolio-text font-medium">
                           {(item.weight * 100).toFixed(2)}%
                         </p>
                       </div>
                       <div>
-                        <p className="text-[#426039] dark:text-[#a2c398]">Return Contribution</p>
+                        <p className="text-muted-foreground">Return Contribution</p>
                         <p className={`font-medium ${getMetricColor(item.weight * results.metrics.expectedReturn, true)}`}>
                           {(item.weight * results.metrics.expectedReturn * 100).toFixed(2)}%
                         </p>

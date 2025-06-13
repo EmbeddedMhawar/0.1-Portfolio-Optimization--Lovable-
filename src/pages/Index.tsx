@@ -129,7 +129,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f7f5] dark:bg-[#162013] transition-colors duration-700">
+    <div className="min-h-screen bg-background transition-colors duration-300">
       <Header />
       
       <div className="container mx-auto px-6 py-8">
@@ -139,7 +139,7 @@ const Index = () => {
             <div className="flex flex-col space-y-6 lg:sticky lg:top-8">
               <div className="text-center lg:text-left">
                 <h1 className="portfolio-text text-[32px] font-bold">Optimize Portfolio</h1>
-                <p className="text-[#426039] dark:text-[#a2c398] mt-2">
+                <p className="text-muted-foreground mt-2">
                   Upload your portfolio data and get optimal asset allocation
                 </p>
               </div>
@@ -152,7 +152,7 @@ const Index = () => {
                   onDragOver={handleDragOver}
                   onDrop={handleDrop}
                   onClick={handleCsvButtonClick}
-                  className="border-2 border-dashed border-[#d4e6d7] dark:border-[#426039] rounded-xl p-8 text-center cursor-pointer hover:border-[#426039] dark:hover:border-[#a2c398] hover:bg-[#e8f0e9]/50 dark:hover:bg-[#2e4328]/50 transition-all duration-300"
+                  className="portfolio-upload-area p-8 text-center cursor-pointer"
                 >
                   <input
                     type="file"
@@ -164,31 +164,31 @@ const Index = () => {
 
                   {csvData ? (
                     <div className="space-y-3">
-                      <div className="w-16 h-16 bg-[#e8f0e9] dark:bg-[#2e4328] rounded-full flex items-center justify-center mx-auto">
-                        <Upload className="w-8 h-8 text-[#426039] dark:text-[#a2c398]" />
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                        <Upload className="w-8 h-8 text-primary" />
                       </div>
                       <div>
                         <p className="portfolio-text font-medium text-lg">File uploaded successfully!</p>
-                        <p className="text-[#426039] dark:text-[#a2c398] text-sm mt-1">
+                        <p className="text-muted-foreground text-sm mt-1">
                           {csvData.assetNames.length} assets • {csvData.prices.length} periods
                         </p>
                       </div>
-                      <button className="text-[#426039] dark:text-[#a2c398] text-sm hover:underline">
+                      <button className="text-primary text-sm hover:underline">
                         Click to upload a different file
                       </button>
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <div className="w-16 h-16 bg-[#e8f0e9] dark:bg-[#2e4328] rounded-full flex items-center justify-center mx-auto">
-                        <Upload className="w-8 h-8 text-[#426039] dark:text-[#a2c398]" />
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                        <Upload className="w-8 h-8 text-primary" />
                       </div>
                       <div>
                         <p className="portfolio-text font-medium text-lg">Upload CSV File</p>
-                        <p className="text-[#426039] dark:text-[#a2c398] text-sm mt-1">
+                        <p className="text-muted-foreground text-sm mt-1">
                           Drag and drop your portfolio data file here, or click to browse
                         </p>
                       </div>
-                      <p className="text-xs text-[#426039] dark:text-[#a2c398]">
+                      <p className="text-xs text-muted-foreground">
                         Supported format: CSV with asset prices over time
                       </p>
                     </div>
@@ -196,9 +196,9 @@ const Index = () => {
                 </div>
 
                 {/* CSV Format Help */}
-                <div className="bg-[#e8f0e9] dark:bg-[#2e4328] rounded-lg p-4">
+                <div className="portfolio-card p-4">
                   <h3 className="portfolio-text font-medium mb-2">Expected CSV Format:</h3>
-                  <div className="text-sm text-[#426039] dark:text-[#a2c398] space-y-1">
+                  <div className="text-sm text-muted-foreground space-y-1">
                     <p>• First column: Date (YYYY-MM-DD)</p>
                     <p>• Subsequent columns: Asset prices</p>
                     <p>• Header row with asset names</p>
@@ -211,7 +211,7 @@ const Index = () => {
               <button
                 onClick={handleOptimize}
                 disabled={!csvData || isOptimizing}
-                className="flex items-center justify-center gap-2 w-full bg-[#2e4328] hover:bg-[#426039] disabled:bg-[#e8f0e9] dark:disabled:bg-[#2e4328] text-white disabled:text-[#426039] dark:disabled:text-[#a2c398] rounded-lg py-4 font-medium transition-colors duration-300 disabled:cursor-not-allowed"
+                className="portfolio-button w-full py-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isOptimizing ? (
                   <>
@@ -227,7 +227,7 @@ const Index = () => {
               </button>
 
               {!csvData && (
-                <div className="text-center text-[#426039] dark:text-[#a2c398] text-sm">
+                <div className="text-center text-muted-foreground text-sm">
                   Upload your portfolio data to get started with optimization
                 </div>
               )}
